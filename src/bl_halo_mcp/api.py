@@ -44,6 +44,7 @@ async def _health(request):
             "frontend_port": config.FRONTEND_PORT,
             "connected": state["connected"],
             "instance_configured": state["connected"] or config.MOCK,
+            "noa_configured": bool(config.NOA_API_KEY),
             "mock": config.MOCK,
             "device": state["device"],
             "uptime_s": round(time.time() - _START, 1),
