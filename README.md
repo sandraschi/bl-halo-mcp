@@ -42,7 +42,7 @@ Backend health: `http://127.0.0.1:11976/api/health`. Ports 11976/11977 registere
 
 ## MCP tools (implemented)
 
-- `halo_device` - 19-op portmanteau (status, connect, show_text/image, photo, IMU, audio, Lua, Noa, Miniapp, firmware)
+- `halo_device` - 21-op portmanteau (status, connect, show_text/image, photo, IMU, audio, Lua CRUD, Noa, Miniapp, firmware)
 - `halo_dashboard` - Prefab App status card
 - `halo_help`, `halo_shutdown` - help + guarded disconnect
 - Resource `skill://halo-dev/SKILL.md`, prompt `halo_recipe`

@@ -4,7 +4,9 @@ All implemented, no stubs. MOCK-safe.
 
 | Tool | Ops |
 |------|-----|
-| `halo_device` (portmanteau) | status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos (limit/offset/has_more), imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info |
+| `halo_device` (portmanteau) | status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos (limit/offset/has_more), imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, get_lua, delete_lua, noa_ask, miniapp_create, firmware_info |
+
+REST: `GET /api/lua-samples` serves the bundled sample apps (`assets/lua-samples/*.lua`: hello, taps, battery, camera - all real frame.* signatures). Lua Apps dashboard page: open/read/edit/save/run/delete + one-click sample load.
 | `halo_dashboard` (app=True Prefab) | Status card: device, battery, display, counts |
 | `halo_help` | topic: pairing, lua, display, noa, ble |
 | `halo_shutdown` | Guarded disconnect (confirm=True) |
