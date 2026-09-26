@@ -17,7 +17,9 @@ Bridge between fleet agents and Brilliant Labs **Halo** AI glasses (2025, succes
 
 ## Prerequisites outside this repo
 
-- Halo ($399, shipments from early Aug 2025) **or** Frame ($349) **or** nothing (MOCK + `halo-emulator`).
+- Halo ($299-399, first units shipped Aug 2026 in limited quantities after repeated
+  production slips; Frame is discontinued/sold out - check brilliant.xyz storefront
+  for current stock) **or** Frame ($349, used) **or** nothing (MOCK + `halo-emulator`).
 - Windows 10/11 + Bluetooth LE (live), or any PC for MOCK.
 - Python 3.11+ via uv; optional: Noa app on iOS/Android for live AI answers.
 - Upstream: `https://docs.brilliant.xyz`, SDK `https://github.com/brilliantlabsAR/brilliant_sdk`, Noa `https://github.com/brilliantlabsAR/noa-flutter`.
