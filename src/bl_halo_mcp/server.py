@@ -1,51 +1,45 @@
-"""FastMCP server - Halo/Frame bridge (stdio). Stateless over JSON state file."""
+"""FastMCP server - Halo/Frame bridge (stdio + HTTP via run_server). Stateless over JSON state file."""
 
 from __future__ import annotations
 
-import importlib
 import logging
+from typing import Annotated
 
 from fastmcp import FastMCP
+from pydantic import Field
+
+from .tools.halo import halo
 
 logger = logging.getLogger("bl-halo-mcp.server")
 
-
-def _import_tools() -> None:
-    """Fatal-on-failure tool import (fleet hardening pattern 2)."""
-    try:
-        importlib.import_module(".tools.halo", package=__name__)
-    except Exception as exc:
-        logger.exception("Fatal tool import error: %s", exc)
-        raise
-
-
-_import_tools()
-
-from .tools.halo import halo  # noqa: E402
-
 mcp = FastMCP("bl-halo-mcp")
 
+_RESULT_SCHEMA: dict = {"type": "object"}
 
-@mcp.tool(annotations={"readonly": True})
+
+@mcp.tool(annotations={"readonly": True}, output_schema=_RESULT_SCHEMA)
 async def halo_device(
-    operation: str,
-    text: str | None = None,
-    image_b64: str | None = None,
-    lua_name: str | None = None,
-    duration_s: float = 3.0,
-    limit: int = 20,
-    offset: int = 0,
+    operation: Annotated[
+        str,
+        Field(
+            description="One of: status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info."
+        ),
+    ],
+    text: Annotated[
+        str | None,
+        Field(
+            description="Text / Lua source / question. Required for: show_text, run_lua, deploy_lua, noa_ask, miniapp_create."
+        ),
+    ] = None,
+    image_b64: Annotated[str | None, Field(description="Base64 image. Required for: show_image.")] = None,
+    lua_name: Annotated[str | None, Field(description="Lua filename. Required for: deploy_lua.")] = None,
+    duration_s: Annotated[float, Field(description="Audio seconds (1-30). Used by: play_audio, record_audio.")] = 3.0,
+    limit: Annotated[
+        int, Field(description="Page size (1-100). Used by: list_photos, list_lua_apps, tap_history.")
+    ] = 20,
+    offset: Annotated[int, Field(description="Page offset. Used by: list_photos, list_lua_apps.")] = 0,
 ) -> dict:
     """Halo / Frame glasses controller (portmanteau).
-
-    Args:
-        operation (str, required): One of: status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info.
-        text (str | None): Text / Lua source / question. Required for: show_text, run_lua, deploy_lua, noa_ask, miniapp_create.
-        image_b64 (str | None): Base64 image. Required for: show_image.
-        lua_name (str | None): Lua filename. Required for: deploy_lua.
-        duration_s (float): Audio seconds (1-30). Used by: play_audio, record_audio.
-        limit (int): Page size (1-100). Used by: list_photos, list_lua_apps, tap_history.
-        offset (int): Page offset. Used by: list_photos, list_lua_apps.
 
     ## Return Format
     `{success, message, result?, error?, suggestions?, has_more?}`.
@@ -66,7 +60,7 @@ async def halo_device(
     )
 
 
-@mcp.tool(app=True, annotations={"readonly": True})
+@mcp.tool(app=True, annotations={"readonly": True}, output_schema=_RESULT_SCHEMA)
 async def halo_dashboard() -> dict:
     """Halo status dashboard (Prefab App).
 
@@ -100,15 +94,17 @@ async def halo_dashboard() -> dict:
         )
         return {"success": True, "message": content, "app": app}
     except Exception:
+        logger.exception("Prefab render failed, falling back to text")
         return {"success": True, "message": content, "content": content}
 
 
-@mcp.tool(annotations={"readonly": True})
-async def halo_help(topic: str | None = None) -> dict:
+@mcp.tool(annotations={"readonly": True}, output_schema=_RESULT_SCHEMA)
+async def halo_help(
+    topic: Annotated[
+        str | None, Field(description="Focus: pairing, lua, display, noa, ble. Omit for overview.")
+    ] = None,
+) -> dict:
     """Halo help - operations, BLE pairing, Lua, Noa.
-
-    Args:
-        topic (str | None): Optional focus: pairing, lua, display, noa, ble.
 
     ## Return Format
     `{success, message, result: {topic, text}}`.
@@ -131,12 +127,11 @@ async def halo_help(topic: str | None = None) -> dict:
     return {"success": True, "message": text, "result": {"topic": key, "text": text}}
 
 
-@mcp.tool(annotations={})
-async def halo_shutdown(confirm: bool = False) -> dict:
+@mcp.tool(annotations={}, output_schema=_RESULT_SCHEMA)
+async def halo_shutdown(
+    confirm: Annotated[bool, Field(description="Must be true to disconnect.")] = False,
+) -> dict:
     """Disconnect Halo (destructive-guarded).
-
-    Args:
-        confirm (bool, required): Must be true to disconnect.
 
     ## Return Format
     `{success, message, result?}`.

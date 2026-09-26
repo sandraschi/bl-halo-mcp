@@ -22,7 +22,7 @@ def _ensure_dirs() -> None:
         _PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
         _LUA_DIR.mkdir(parents=True, exist_ok=True)
     except Exception:
-        logger.warning("Failed to create data dirs", exc_info=True)
+        logger.exception("Failed to create data dirs")
 
 
 def _default_state() -> dict:
@@ -53,7 +53,7 @@ def load() -> dict:
         if _STATE_FILE.exists():
             return json.loads(_STATE_FILE.read_text(encoding="utf-8"))
     except Exception:
-        logger.warning("State read failed, using defaults", exc_info=True)
+        logger.exception("State read failed, using defaults")
     state = _default_state()
     save(state)
     return state
@@ -64,7 +64,7 @@ def save(state: dict) -> None:
         _ensure_dirs()
         _STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
     except Exception:
-        logger.warning("State write failed", exc_info=True)
+        logger.exception("State write failed")
 
 
 def log_event(state: dict, kind: str, detail: str) -> None:
@@ -72,7 +72,7 @@ def log_event(state: dict, kind: str, detail: str) -> None:
         state.setdefault("events", []).append({"ts": time.time(), "kind": kind, "detail": detail[:500]})
         state["events"] = state["events"][-200:]
     except Exception:
-        logger.warning("Event log failed", exc_info=True)
+        logger.exception("Event log failed")
 
 
 def photos_dir() -> Path:
