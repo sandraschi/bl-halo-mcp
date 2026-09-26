@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
+import { useHealth } from "./lib/api";
 import { fetchModels, probeProviders } from "./lib/provider";
 import {
 	Chat,
@@ -38,7 +39,9 @@ export function Settings() {
 	return (
 		<section>
 			<h1 data-testid="settings-title">Settings</h1>
-			<div data-testid="settings-health">backend 11976 - see Dashboard</div>
+			<div data-testid="settings-health">
+				backend {useHealth()?.backend_port ?? "?"} - see Dashboard
+			</div>
 			<select
 				data-testid="llm-provider-select"
 				value={provider}

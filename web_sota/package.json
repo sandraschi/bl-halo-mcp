@@ -17,7 +17,9 @@
   "private": true,
   "scripts": {
     "build": "tsc --noEmit && vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "check": "tsc --noEmit",
+    "biome:ci": "biome check src"
   },
   "type": "module",
   "version": "0.1.0"
