@@ -170,6 +170,19 @@ export function Help(): React.ReactElement {
 						milliseconds) and scale (zero labor per identification, instant
 						global distribution).
 					</p>
+					<p className="mt-2 text-sm text-zinc-300">
+						<strong className="text-zinc-100">
+							The malevolent-AI layer is real but form-factor-blind:
+						</strong>{" "}
+						nudify apps, face debasement, fabricated crime scenes operate on any
+						image from any source - banning glasses to stop them is banning
+						envelopes to stop hate mail. And on geometries of abuse, glasses
+						lose badly: a fixed forward eye-level low-res camera on a visible
+						face versus a phone that goes anywhere, aims anywhere, and
+						out-resolves it while nobody looks twice. Nobody proposes banning
+						camera phones first - which says the panic was never about the
+						shots.
+					</p>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
 						<li>EU/GDPR: strictest regime; facial data needs a legal basis.</li>
 						<li>
