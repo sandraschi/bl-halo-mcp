@@ -19,6 +19,7 @@ const CHAT_CAP = 100;
 interface Msg {
 	q: string;
 	a: string;
+	mocked: boolean;
 }
 
 function loadHistory(): Msg[] {
@@ -39,6 +40,7 @@ export function Chat(): React.ReactElement {
 	const [skill, setSkill] = useState("halo-dev");
 	const [skills, setSkills] = useState<string[]>([]);
 	const [personality, setPersonality] = useState("Halo Guide");
+	const [sendError, setSendError] = useState("");
 	useEffect(() => {
 		fetchJson("/api/skills", undefined, 1)
 			.then((j) =>
@@ -50,6 +52,7 @@ export function Chat(): React.ReactElement {
 	const send = async (): Promise<void> => {
 		if (!msg.trim() || sending) return;
 		setSending(true);
+		setSendError("");
 		try {
 			const r = await fetchJson("/api/llm/chat", {
 				method: "POST",
@@ -57,14 +60,18 @@ export function Chat(): React.ReactElement {
 				body: JSON.stringify({
 					message: `${PERSONALITIES[personality]}\n\n${msg}`,
 					skill,
+					model: model === "none" ? "" : model,
 				}),
 			});
-			const next = [...hist, { q: msg, a: String(r.answer ?? "") }].slice(
-				-CHAT_CAP,
-			);
+			const next = [
+				...hist,
+				{ q: msg, a: String(r.answer ?? ""), mocked: r.mock !== false },
+			].slice(-CHAT_CAP);
 			setHist(next);
 			localStorage.setItem(CHAT_KEY, JSON.stringify(next));
 			setMsg("");
+		} catch (e) {
+			setSendError(`Send failed: ${e}. Is the backend reachable?`);
 		} finally {
 			setSending(false);
 		}
@@ -118,8 +125,13 @@ export function Chat(): React.ReactElement {
 						<div key={i}>
 							<div className="text-sm font-semibold text-amber-300">You</div>
 							<div className="text-sm">{m.q}</div>
-							<div className="mt-1 text-sm font-semibold text-blue-300">
+							<div className="mt-1 flex items-center gap-2 text-sm font-semibold text-blue-300">
 								Noa/local
+								{m.mocked && (
+									<span className="rounded bg-zinc-700 px-1 text-[10px] font-normal text-amber-300">
+										MOCK
+									</span>
+								)}
 							</div>
 							<div className="whitespace-pre-wrap text-sm text-zinc-300">
 								{m.a}
@@ -128,6 +140,23 @@ export function Chat(): React.ReactElement {
 					))}
 				</div>
 			</Card>
+			{model === "none" && (
+				<div
+					data-testid="chat-no-model"
+					className="rounded border border-amber-700 bg-amber-950 px-3 py-2 text-sm text-amber-200"
+				>
+					No model selected - open Settings to pick one of your installed Ollama
+					models, or the backend will use a loaded one automatically.
+				</div>
+			)}
+			{sendError && (
+				<div
+					data-testid="chat-error"
+					className="rounded border border-red-800 bg-red-950 px-3 py-2 text-sm text-red-200"
+				>
+					{sendError}
+				</div>
+			)}
 			<div className="flex gap-2">
 				<input
 					data-testid="chat-input"

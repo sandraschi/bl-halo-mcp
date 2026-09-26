@@ -72,7 +72,7 @@ async def _tools(request):
     return JSONResponse(
         {
             "tools": [
-                {"name": "halo_device", "kind": "portmanteau", "ops": 19},
+                {"name": "halo_device", "kind": "portmanteau", "ops": 21},
                 {"name": "halo_dashboard", "kind": "prefab-app"},
                 {"name": "halo_help", "kind": "solo"},
                 {"name": "halo_shutdown", "kind": "solo"},
@@ -296,6 +296,8 @@ _HALO_OPS = [
     "run_lua",
     "list_lua_apps",
     "deploy_lua",
+    "get_lua",
+    "delete_lua",
     "noa_ask",
     "miniapp_create",
     "firmware_info",
@@ -312,7 +314,7 @@ _TOOL_SCHEMAS: dict[str, dict] = {
                 "operation": {"type": "string", "enum": _HALO_OPS, "description": "Which device op to run."},
                 "text": {
                     "type": "string",
-                    "description": "Required for: show_text, run_lua, deploy_lua, noa_ask, miniapp_create.",
+                    "description": "Required for: show_text, run_lua, deploy_lua, noa_ask, miniapp_create. lua_name is required for: deploy_lua, get_lua, delete_lua.",
                 },
                 "image_b64": {"type": "string", "description": "Required for: show_image (base64 PNG/JPEG)."},
                 "lua_name": {"type": "string", "description": "Required for: deploy_lua (plain *.lua)."},
@@ -363,6 +365,19 @@ _TOOL_SCHEMAS: dict[str, dict] = {
         },
     },
 }
+
+
+async def _lua_samples(request):
+    from pathlib import Path
+
+    samples_dir = Path(__file__).resolve().parents[2] / "assets" / "lua-samples"
+    items: list[dict] = []
+    try:
+        for p in sorted(samples_dir.glob("*.lua")):
+            items.append({"name": p.name, "source": p.read_text(encoding="utf-8")})
+    except Exception:
+        logger.exception("Lua samples read failed")
+    return JSONResponse({"items": items, "has_more": False})
 
 
 async def _tool_get(request):
@@ -429,22 +444,51 @@ async def _llm_chat(request):
     prompt = str(body.get("message", body.get("prompt", "")))[:2000]
     if not prompt:
         return JSONResponse({"error": "message required"}, status_code=400)
-    # Backend proxy only; no direct browser-to-provider. MOCK answer when no local LLM.
-    answer = f"[bl-halo-mcp] No local LLM detected; start Ollama (11434) for live chat. Echo: {prompt[:300]}"
-    # Best-effort Ollama passthrough (3s timeout), else mock echo.
+    # Backend proxy only; no direct browser-to-provider.
+    model = str(body.get("model", "") or "").strip()
+    if not model or model == "none":
+        model = _pick_chat_model()
+    if not model:
+        return JSONResponse(
+            {
+                "answer": "[bl-halo-mcp] No local model installed - run `ollama pull gemma3:4b` (or any model), then chat again.",
+                "mock": True,
+                "model": "",
+            }
+        )
     try:
         req = urllib.request.Request(
             "http://127.0.0.1:11434/api/generate",
-            data=json.dumps({"model": "gemma3:4b", "prompt": prompt[:1000], "stream": False}).encode(),
+            data=json.dumps({"model": model, "prompt": prompt[:1000], "stream": False}).encode(),
             headers={"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=3) as resp:
+        with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
             if data.get("response"):
-                answer = str(data["response"])[:4000]
+                return JSONResponse({"answer": str(data["response"])[:4000], "mock": False, "model": model})
     except Exception:
         logger.debug("Ollama passthrough unavailable", exc_info=True)
-    return JSONResponse({"answer": answer, "mock": True})
+    return JSONResponse(
+        {
+            "answer": f"[bl-halo-mcp] Model {model} did not answer (not pulled or Ollama busy). Echo: {prompt[:300]}",
+            "mock": True,
+            "model": model,
+        }
+    )
+
+
+def _pick_chat_model() -> str:
+    """Resident model first, else first installed local (non-cloud, non-embed) model."""
+    ps = _probe_json("http://127.0.0.1:11434/api/ps")
+    loaded = [m.get("name", "") for m in ps.get("models", []) if isinstance(m, dict) and m.get("name")]
+    if loaded:
+        return loaded[0]
+    tags = _probe_json("http://127.0.0.1:11434/api/tags")
+    for m in tags.get("models", []):
+        name = m.get("name", "") if isinstance(m, dict) else ""
+        if name and ":cloud" not in name and "embed" not in name:
+            return name
+    return ""
 
 
 routes = [
@@ -456,6 +500,7 @@ routes = [
     Route("/api/llm/detect", _llm_detect),
     Route("/api/skills", _skills),
     Route("/api/skills/{name}", _skill_read),
+    Route("/api/lua-samples", _lua_samples),
     Route("/api/devices", _devices),
     Route("/api/photos", _photos),
     Route("/api/halo", _halo_action, methods=["POST"]),

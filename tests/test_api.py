@@ -61,6 +61,14 @@ def test_tool_schema_and_run():
     assert bad.json()["result"]["success"] is False
 
 
+def test_lua_samples_endpoint():
+    r = client.get("/api/lua-samples")
+    assert r.status_code == 200
+    names = [i["name"] for i in r.json()["items"]]
+    assert "hello.lua" in names
+    assert all(i["source"].strip() for i in r.json()["items"])
+
+
 def test_llm_detect_shape():
     r = client.get("/api/llm/detect")
     assert r.status_code == 200
@@ -73,6 +81,7 @@ def test_llm_chat_and_gpus():
     r = client.post("/api/llm/chat", json={"message": "hello"})
     assert r.status_code == 200
     assert "answer" in r.json()
+    assert "model" in r.json()
     g = client.get("/api/llm/gpus")
     assert g.status_code == 200
     assert isinstance(g.json()["gpus"], list)
