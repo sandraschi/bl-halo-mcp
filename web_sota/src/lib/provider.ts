@@ -1,32 +1,25 @@
-export async function probeProviders(): Promise<string[]> {
-	const out: string[] = [];
-	try {
-		const r = await fetch("http://127.0.0.1:11434/api/tags", {
-			signal: AbortSignal.timeout(3000),
-		});
-		if (r.ok) out.push("ollama");
-	} catch {}
-	try {
-		const r = await fetch("http://127.0.0.1:1234/v1/models", {
-			signal: AbortSignal.timeout(3000),
-		});
-		if (r.ok) out.push("lmstudio");
-	} catch {}
-	return out;
+export interface DetectedProvider {
+	id: string;
+	label: string;
+	port: number;
+	detected: boolean;
+	models: string[];
+	loaded: string[];
 }
+
+export async function fetchDetect(): Promise<DetectedProvider[]> {
+	const r = await fetch("/api/llm/detect");
+	if (!r.ok) throw new Error(`detect HTTP ${r.status}`);
+	const j = await r.json();
+	return j.providers ?? [];
+}
+
 export async function fetchModels(provider: string): Promise<string[]> {
-	try {
-		if (provider === "ollama") {
-			const r = await fetch("http://127.0.0.1:11434/api/tags");
-			const j = await r.json();
-			return (j.models ?? []).map((m: any) => m.name);
-		}
-		const r = await fetch(
-			`http://127.0.0.1:${provider === "lmstudio" ? 1234 : 8000}/v1/models`,
-		);
-		const j = await r.json();
-		return (j.data ?? []).map((m: any) => m.id);
-	} catch {
-		return [];
-	}
+	const det = await fetchDetect();
+	return det.find((p) => p.id === provider)?.models ?? [];
+}
+
+export async function probeProviders(): Promise<string[]> {
+	const det = await fetchDetect();
+	return det.filter((p) => p.detected).map((p) => p.id);
 }
