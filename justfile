@@ -28,3 +28,6 @@ ci:
 e2e:
 	uv run pytest -q
 	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/e2e.ps1
+
+verify-css:
+	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-css.ps1
