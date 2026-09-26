@@ -162,7 +162,13 @@ export function Help(): React.ReactElement {
 						from promenades in the 1890s, Londoners resented being looked at by
 						Peelers in 1829, and Google Glass (2013) died substantially on
 						social rejection - "Stop the Cyborgs", bar bans, <em>glasshole</em>.
-						That is the precedent Halo walks into, LED or no LED.
+						That is the precedent Halo walks into, LED or no LED. Even the
+						supposedly new bits - eternal memorisation, public distribution -
+						are Kodak-era: street photography published strangers for a century,
+						negatives keep forever. What is actually new fits in two words:
+						retrieval (any face searchable across billions of images in
+						milliseconds) and scale (zero labor per identification, instant
+						global distribution).
 					</p>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
 						<li>EU/GDPR: strictest regime; facial data needs a legal basis.</li>
