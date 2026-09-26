@@ -157,7 +157,12 @@ export function Help(): React.ReactElement {
 						outcome is a broken nose, not a GDPR complaint. The only genuine
 						novelty in glasses is friction - hands-free, always-on capture
 						already wired to recognition and memory. A difference of degree
-						wearing the costume of a difference of kind.
+						wearing the costume of a difference of kind. Every sensing leap
+						replays the same panic: Kodak "camera fiends" got photography banned
+						from promenades in the 1890s, Londoners resented being looked at by
+						Peelers in 1829, and Google Glass (2013) died substantially on
+						social rejection - "Stop the Cyborgs", bar bans, <em>glasshole</em>.
+						That is the precedent Halo walks into, LED or no LED.
 					</p>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
 						<li>EU/GDPR: strictest regime; facial data needs a legal basis.</li>
