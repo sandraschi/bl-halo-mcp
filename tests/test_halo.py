@@ -38,6 +38,18 @@ def test_validation():
     assert out["error_type"] == "validation"
 
 
+def test_lua_crud_roundtrip():
+    assert asyncio.run(halo("deploy_lua", text="-- crud", lua_name="crud_app.lua"))["success"] is True
+    got = asyncio.run(halo("get_lua", lua_name="crud_app.lua"))
+    assert got["success"] is True
+    assert "-- crud" in got["result"]["source"]
+    missing = asyncio.run(halo("get_lua", lua_name="nope.lua"))
+    assert missing["success"] is False
+    assert asyncio.run(halo("delete_lua", lua_name="crud_app.lua"))["result"].get("deleted") is True
+    assert asyncio.run(halo("get_lua", lua_name="crud_app.lua"))["success"] is False
+    assert asyncio.run(halo("delete_lua", lua_name="../evil.lua"))["success"] is False
+
+
 def test_noa_mock_names_key_path():
     out = asyncio.run(halo("noa_ask", text="What time is it?"))
     assert out["success"] is True

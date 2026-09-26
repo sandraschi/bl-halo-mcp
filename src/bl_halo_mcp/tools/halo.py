@@ -44,6 +44,8 @@ HaloOp = Literal[
     "run_lua",
     "list_lua_apps",
     "deploy_lua",
+    "get_lua",
+    "delete_lua",
     "noa_ask",
     "miniapp_create",
     "firmware_info",
@@ -283,6 +285,40 @@ async def halo(
             log_event(state, "lua.deploy", name)
             save(state)
             return _ok(f"Deployed {name} ({len(text)} chars).", result={"name": name})
+
+        def _lua_name(value: str | None, default: str = "main.lua") -> str | None:
+            name = (value or default).strip() or default
+            if "/" in name or "\\" in name or not name.endswith(".lua"):
+                return None
+            return name
+
+        if op == "get_lua":
+            name = _lua_name(lua_name)
+            if name is None:
+                return _error_response("lua_name must be a plain *.lua filename.", "validation")
+            path = lua_dir() / name
+            if not path.exists():
+                return _error_response(
+                    f"{name} not found.",
+                    "validation",
+                    suggestions=["List apps with operation=list_lua_apps", "Load a sample from the Lua page"],
+                )
+            src = path.read_text(encoding="utf-8")
+            return _ok(f"Read {name} ({len(src)} chars).", result={"name": name, "source": src, "bounded": True})
+
+        if op == "delete_lua":
+            name = _lua_name(lua_name)
+            if name is None:
+                return _error_response("lua_name must be a plain *.lua filename.", "validation")
+            path = lua_dir() / name
+            if not path.exists():
+                return _error_response(f"{name} not found - nothing deleted.", "validation")
+            path.unlink()
+            if name in state.get("lua_apps", []):
+                state["lua_apps"] = [n for n in state["lua_apps"] if n != name]
+            log_event(state, "lua.delete", name)
+            save(state)
+            return _ok(f"Deleted {name}.", result={"name": name, "deleted": True})
 
         if op == "noa_ask":
             if not text or not text.strip():

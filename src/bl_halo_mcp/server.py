@@ -22,7 +22,7 @@ async def halo_device(
     operation: Annotated[
         str,
         Field(
-            description="One of: status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info."
+            description="One of: status, list_devices, connect, disconnect, show_text, show_image, clear_display, capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, list_lua_apps, deploy_lua, get_lua, delete_lua, noa_ask, miniapp_create, firmware_info."
         ),
     ],
     text: Annotated[
@@ -126,7 +126,7 @@ async def halo_help(
             "from github.com/brilliantlabsAR/noa-playground and it calls api.brilliant.xyz live. "
             "Ops: status, list_devices, connect, disconnect, show_text, show_image, clear_display, "
             "capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, "
-            "list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info. "
+            "list_lua_apps, deploy_lua, get_lua, delete_lua, noa_ask, miniapp_create, firmware_info. "
             "Topics: pairing, lua, display, noa, ble, hardware. Full guide: docs/ONBOARDING.md."
         ),
         "pairing": (
