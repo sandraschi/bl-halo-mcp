@@ -1,11 +1,13 @@
-"""Starlette REST backend (no Pydantic) - health, dashboard, tools, skills, chat proxy, logs."""
+"""Starlette REST backend (no Pydantic) + FastMCP `/mcp` mount with lifespan wiring."""
 
 from __future__ import annotations
 
 import json
 import logging
+import subprocess
 import time
 import urllib.request
+from contextlib import asynccontextmanager
 
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
@@ -14,10 +16,21 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from . import config
-from .state import load
+from .server import mcp
+from .state import load, log_event, save
+from .tools.halo import halo
 
 logger = logging.getLogger("bl-halo-mcp.api")
 _START = time.time()
+
+mcp_app = mcp.http_app(path="/")
+
+
+@asynccontextmanager
+async def lifespan(app: Starlette):
+    load()  # shallow state probe (startup gate: state file must read)
+    async with mcp_app.router.lifespan_context(app):
+        yield
 
 
 async def _health(request):
@@ -93,43 +106,98 @@ async def _devices(request):
     )
 
 
+async def _photos(request):
+    state = load()
+    try:
+        limit = max(1, min(int(request.query_params.get("limit", 20)), 100))
+        offset = max(0, int(request.query_params.get("offset", 0)))
+    except ValueError:
+        return JSONResponse({"error": "limit/offset must be integers"}, status_code=400)
+    photos = state.get("photos", [])
+    return JSONResponse({"items": photos[offset : offset + limit], "has_more": len(photos) > offset + limit})
+
+
+async def _halo_action(request):
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "JSON body required"}, status_code=400)
+    if not isinstance(body, dict) or not body.get("operation"):
+        return JSONResponse({"error": "operation is required"}, status_code=400)
+    try:
+        out = await halo(
+            operation=body["operation"],
+            text=body.get("text"),
+            image_b64=body.get("image_b64"),
+            lua_name=body.get("lua_name"),
+            duration_s=float(body.get("duration_s", 3.0)),
+            limit=int(body.get("limit", 20)),
+            offset=int(body.get("offset", 0)),
+        )
+    except (ValueError, TypeError):
+        return JSONResponse({"error": "duration_s/limit/offset must be numbers"}, status_code=400)
+    return JSONResponse(out)
+
+
+async def _shutdown(request):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    if not isinstance(body, dict) or body.get("confirm") is not True:
+        return JSONResponse({"error": "Pass confirm=true to disconnect."}, status_code=400)
+    state = load()
+    state["connected"] = False
+    log_event(state, "disconnect", "via REST")
+    save(state)
+    return JSONResponse({"success": True, "message": "Halo disconnected.", "result": {"connected": False}})
+
+
 async def _logs(request):
     state = load()
     return JSONResponse({"items": state.get("events", [])[-100:], "has_more": False})
 
 
+def _providers_payload() -> dict:
+    return {
+        "providers": [
+            {
+                "id": "ollama",
+                "label": "Ollama (local)",
+                "kind": "local",
+                "base_url": "http://127.0.0.1:11434",
+                "needs_key": False,
+                "configured": False,
+                "detected": False,
+            },
+            {
+                "id": "lmstudio",
+                "label": "LM Studio (local)",
+                "kind": "local",
+                "base_url": "http://127.0.0.1:1234",
+                "needs_key": False,
+                "configured": False,
+            },
+            {
+                "id": "noa",
+                "label": "Noa (Halo companion, via app)",
+                "kind": "device",
+                "base_url": "",
+                "needs_key": False,
+                "configured": load()["connected"],
+            },
+        ]
+    }
+
+
 async def _llm_providers(request):
-    return JSONResponse(
-        {
-            "providers": [
-                {
-                    "id": "ollama",
-                    "label": "Ollama (local)",
-                    "kind": "local",
-                    "base_url": "http://127.0.0.1:11434",
-                    "needs_key": False,
-                    "configured": False,
-                    "detected": False,
-                },
-                {
-                    "id": "lmstudio",
-                    "label": "LM Studio (local)",
-                    "kind": "local",
-                    "base_url": "http://127.0.0.1:1234",
-                    "needs_key": False,
-                    "configured": False,
-                },
-                {
-                    "id": "noa",
-                    "label": "Noa (Halo companion, via app)",
-                    "kind": "device",
-                    "base_url": "",
-                    "needs_key": False,
-                    "configured": load()["connected"],
-                },
-            ]
-        }
-    )
+    return JSONResponse(_providers_payload())
+
+
+async def _llm_discover(request):
+    payload = _providers_payload()
+    payload["source"] = "curated"
+    return JSONResponse(payload)
 
 
 async def _llm_models(request):
@@ -137,7 +205,16 @@ async def _llm_models(request):
 
 
 async def _llm_gpus(request):
-    return JSONResponse({"gpus": []})
+    gpus: list[dict] = []
+    try:
+        proc = subprocess.run(["nvidia-smi", "-L"], capture_output=True, text=True, timeout=10, check=False)
+        for i, line in enumerate(proc.stdout.splitlines()):
+            line = line.strip()
+            if line.startswith("GPU "):
+                gpus.append({"index": i, "name": line})
+    except Exception:
+        logger.debug("nvidia-smi probe unavailable", exc_info=True)
+    return JSONResponse({"gpus": gpus})
 
 
 async def _llm_chat(request):
@@ -173,8 +250,12 @@ routes = [
     Route("/api/skills", _skills),
     Route("/api/skills/{name}", _skill_read),
     Route("/api/devices", _devices),
+    Route("/api/photos", _photos),
+    Route("/api/halo", _halo_action, methods=["POST"]),
+    Route("/api/shutdown", _shutdown, methods=["POST"]),
     Route("/api/logs", _logs),
     Route("/api/llm/providers", _llm_providers),
+    Route("/api/llm/discover", _llm_discover),
     Route("/api/llm/models", _llm_models),
     Route("/api/llm/gpus", _llm_gpus),
     Route("/api/llm/chat", _llm_chat, methods=["POST"]),
@@ -199,12 +280,14 @@ class _CorsMiddleware(BaseHTTPMiddleware):
         return resp
 
 
-app = Starlette(routes=routes, middleware=[Middleware(_CorsMiddleware)])
+app = Starlette(routes=routes, middleware=[Middleware(_CorsMiddleware)], lifespan=lifespan)
+app.mount("/mcp", mcp_app)
 
 
 def main() -> None:
     import uvicorn
 
+    logging.basicConfig(level=logging.INFO)
     uvicorn.run(app, host="127.0.0.1", port=config.BACKEND_PORT)
 
 
