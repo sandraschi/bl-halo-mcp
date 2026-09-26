@@ -157,7 +157,7 @@ export function Shell(): React.ReactElement {
 					{!collapsed && (
 						<div className="leading-tight">
 							<div className="text-sm font-bold">bl-halo-mcp</div>
-							<div className="font-mono text-[10px] text-zinc-500">v0.2.0</div>
+							<div className="font-mono text-[10px] text-zinc-500">v0.3.0</div>
 						</div>
 					)}
 				</div>

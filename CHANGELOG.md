@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.0 - 2026-09-26
+
+- Live Noa cloud path: `noa_ask` with `NOA_API_KEY` calls `api.brilliant.xyz/dev/noa`
+  (contract copied from Brilliant's public noa-playground; raw-token Authorization,
+  multipart prompt/messages/image/experimental/time/location). Failures return
+  `error_type: noa_cloud`, never silent mock. Without a key the labeled MOCK stands.
+- Help rewritten as a capability matrix (nothing/glasses/key tiers) + hardware topic
+  with grounded specs (Balletto B1, PAG7982J1, 256x256 drawable, no-show() draws).
+- Webapp SOTA rebuild: Tailwind Zinc/Amber dark, Lucide, Framer Motion, Zustand,
+  BrowserRouter, AppLayout (top collapse toggle, topbar health dot, help modal,
+  toasts, companion mode, disconnect e-stop, Ctrl+L logs), Tools portmanteau
+  drill-down + schema runner, tabbed Help, backend-mediated LLM detect
+  (no direct browser-to-provider fetch), LlmOnboarding-style Settings, Hardware
+  page with Three.js STL viewer (official halo.stl URL + file picker), AppsHub
+  experimental stub. All prior data-testids preserved.
+- Backend: `GET /api/llm/detect`, `GET+POST /api/tools/:name` (reuses server
+  tool coroutines directly), `noa_configured` in health.
+- Docs: new docs/HARDWARE.md (official STL link, corrected spec, safety);
+  README hardware section; Noa key acquisition in ONBOARDING + SKILL.
+
 ## 0.2.0 - 2026-09-26
 
 - assfix pass (score 17 -> SOTA): fixed unimportable server module (relative-import
