@@ -36,3 +36,38 @@ def test_validation():
     out = asyncio.run(halo("show_text", text=""))
     assert out["success"] is False
     assert out["error_type"] == "validation"
+
+
+def test_noa_mock_names_key_path():
+    out = asyncio.run(halo("noa_ask", text="What time is it?"))
+    assert out["success"] is True
+    assert out["result"]["mock"] is True
+    assert "NOA_API_KEY" in out["result"]["answer"]
+
+
+def test_noa_live_path_mocked(monkeypatch):
+    import bl_halo_mcp.config as cfg
+    import bl_halo_mcp.noa_cloud as cloud
+
+    monkeypatch.setattr(cfg, "NOA_API_KEY", "preview-key")
+    monkeypatch.setattr(cloud, "ask_noa", lambda *a, **k: {"answer": "live!", "image_b64": None, "debug": {}})
+    out = asyncio.run(halo("noa_ask", text="hi?"))
+    assert out["success"] is True
+    assert out["result"]["mock"] is False
+    assert out["result"]["answer"] == "live!"
+
+
+def test_noa_cloud_failure_is_error(monkeypatch):
+    import bl_halo_mcp.config as cfg
+    import bl_halo_mcp.noa_cloud as cloud
+    from bl_halo_mcp.noa_cloud import NoaCloudError
+
+    monkeypatch.setattr(cfg, "NOA_API_KEY", "bad-key")
+
+    def boom(*a, **k):
+        raise NoaCloudError("HTTP 401: bad key")
+
+    monkeypatch.setattr(cloud, "ask_noa", boom)
+    out = asyncio.run(halo("noa_ask", text="hi?"))
+    assert out["success"] is False
+    assert out["error_type"] == "noa_cloud"

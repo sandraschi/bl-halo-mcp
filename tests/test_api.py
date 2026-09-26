@@ -45,6 +45,29 @@ def test_shutdown_guard():
     assert r.json()["result"] == {"connected": False}
 
 
+def test_tool_schema_and_run():
+    r = client.get("/api/tools/halo_device")
+    assert r.status_code == 200
+    tool = r.json()["tool"]
+    assert tool["kind"] == "portmanteau"
+    assert "operation" in tool["parameters"]["properties"]
+    assert client.get("/api/tools/nope").status_code == 404
+    run = client.post("/api/tools/halo_device", json={"arguments": {"operation": "status"}})
+    assert run.status_code == 200
+    assert run.json()["result"]["success"] is True
+    help_run = client.post("/api/tools/halo_help", json={"arguments": {"topic": "noa"}})
+    assert help_run.json()["result"]["success"] is True
+    bad = client.post("/api/tools/halo_device", json={"arguments": {"operation": "nope"}})
+    assert bad.json()["result"]["success"] is False
+
+
+def test_llm_detect_shape():
+    r = client.get("/api/llm/detect")
+    assert r.status_code == 200
+    ids = [p["id"] for p in r.json()["providers"]]
+    assert ids == ["ollama", "lmstudio", "vllm"]
+
+
 def test_llm_chat_and_gpus():
     assert client.post("/api/llm/chat", json={}).status_code == 400
     r = client.post("/api/llm/chat", json={"message": "hello"})

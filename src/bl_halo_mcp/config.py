@@ -19,3 +19,10 @@ DEVICE_MAC = os.environ.get("BL_HALO_DEVICE_MAC", "").strip()
 DEVICE_NAME = os.environ.get("BL_HALO_DEVICE_NAME", "Halo").strip() or "Halo"
 API_URL = os.environ.get("BL_HALO_API_URL", f"http://127.0.0.1:{BACKEND_PORT}").strip()
 DATA_DIR = os.environ.get("BL_HALO_DATA_DIR", "data").strip() or "data"
+# Noa cloud (unofficial integration via Brilliant's public playground contract).
+# Get a preview key from https://github.com/brilliantlabsAR/noa-playground
+# (API key box) or log in via the Noa mobile app. Blank = MOCK answers.
+NOA_API_KEY = os.environ.get("NOA_API_KEY", "").strip()
+NOA_API_URL = os.environ.get("NOA_API_URL", "https://api.brilliant.xyz/dev/noa").strip() or (
+    "https://api.brilliant.xyz/dev/noa"
+)

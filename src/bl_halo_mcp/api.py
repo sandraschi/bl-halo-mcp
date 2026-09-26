@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import subprocess
@@ -217,6 +218,202 @@ async def _llm_gpus(request):
     return JSONResponse({"gpus": gpus})
 
 
+def _probe_json(url: str, timeout_s: float = 2.5) -> dict | list | None:
+    try:
+        with urllib.request.urlopen(url, timeout=timeout_s) as resp:
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+    except Exception:
+        return None
+
+
+async def _llm_detect(request):
+    """Server-side local-LLM probes (browser must never fetch providers directly)."""
+    import concurrent.futures
+
+    def work() -> dict:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+            f_tags = ex.submit(_probe_json, "http://127.0.0.1:11434/api/tags")
+            f_ps = ex.submit(_probe_json, "http://127.0.0.1:11434/api/ps")
+            f_lms = ex.submit(_probe_json, "http://127.0.0.1:1234/v1/models")
+            f_vllm = ex.submit(_probe_json, "http://127.0.0.1:8000/v1/models")
+            tags = f_tags.result() or {}
+            ps = f_ps.result() or {}
+            lms = f_lms.result() or {}
+            vllm = f_vllm.result() or {}
+        ollama_models = [m.get("name", "") for m in tags.get("models", []) if isinstance(m, dict)]
+        ollama_loaded = [m.get("name", "") for m in ps.get("models", []) if isinstance(m, dict)]
+        lms_models = [m.get("id", "") for m in lms.get("data", []) if isinstance(m, dict)]
+        vllm_models = [m.get("id", "") for m in vllm.get("data", []) if isinstance(m, dict)]
+        return {
+            "providers": [
+                {
+                    "id": "ollama",
+                    "label": "Ollama (local)",
+                    "port": 11434,
+                    "detected": bool(ollama_models or ollama_loaded),
+                    "models": ollama_models,
+                    "loaded": ollama_loaded,
+                },
+                {
+                    "id": "lmstudio",
+                    "label": "LM Studio (local)",
+                    "port": 1234,
+                    "detected": bool(lms_models),
+                    "models": lms_models,
+                    "loaded": [],
+                },
+                {
+                    "id": "vllm",
+                    "label": "vLLM (local)",
+                    "port": 8000,
+                    "detected": bool(vllm_models),
+                    "models": vllm_models,
+                    "loaded": [],
+                },
+            ]
+        }
+
+    loop = asyncio.get_running_loop()
+    return JSONResponse(await loop.run_in_executor(None, work))
+
+
+_HALO_OPS = [
+    "status",
+    "list_devices",
+    "connect",
+    "disconnect",
+    "show_text",
+    "show_image",
+    "clear_display",
+    "capture_photo",
+    "list_photos",
+    "imu_read",
+    "tap_history",
+    "play_audio",
+    "record_audio",
+    "run_lua",
+    "list_lua_apps",
+    "deploy_lua",
+    "noa_ask",
+    "miniapp_create",
+    "firmware_info",
+]
+
+_TOOL_SCHEMAS: dict[str, dict] = {
+    "halo_device": {
+        "name": "halo_device",
+        "kind": "portmanteau",
+        "description": "Halo/Frame glasses controller. Pick operation, then only its args.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "operation": {"type": "string", "enum": _HALO_OPS, "description": "Which device op to run."},
+                "text": {
+                    "type": "string",
+                    "description": "Required for: show_text, run_lua, deploy_lua, noa_ask, miniapp_create.",
+                },
+                "image_b64": {"type": "string", "description": "Required for: show_image (base64 PNG/JPEG)."},
+                "lua_name": {"type": "string", "description": "Required for: deploy_lua (plain *.lua)."},
+                "duration_s": {
+                    "type": "number",
+                    "default": 3.0,
+                    "description": "1-30. Used by: play_audio, record_audio.",
+                },
+                "limit": {
+                    "type": "integer",
+                    "default": 20,
+                    "description": "1-100. Used by: list_photos, list_lua_apps, tap_history.",
+                },
+                "offset": {"type": "integer", "default": 0, "description": "Used by: list_photos, list_lua_apps."},
+            },
+            "required": ["operation"],
+        },
+    },
+    "halo_dashboard": {
+        "name": "halo_dashboard",
+        "kind": "prefab-app",
+        "description": "Status card: device, battery, display, counts.",
+        "parameters": {"type": "object", "properties": {}},
+    },
+    "halo_help": {
+        "name": "halo_help",
+        "kind": "solo",
+        "description": "Pairing, Lua, display, Noa, BLE help topics.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "topic": {
+                    "type": "string",
+                    "enum": ["pairing", "lua", "display", "noa", "ble"],
+                    "description": "Help focus. Omit for overview.",
+                }
+            },
+        },
+    },
+    "halo_shutdown": {
+        "name": "halo_shutdown",
+        "kind": "solo",
+        "description": "Disconnect Halo. Destructive-guarded.",
+        "parameters": {
+            "type": "object",
+            "properties": {"confirm": {"type": "boolean", "description": "Must be true."}},
+            "required": ["confirm"],
+        },
+    },
+}
+
+
+async def _tool_get(request):
+    name = request.path_params.get("name", "")
+    schema = _TOOL_SCHEMAS.get(name)
+    if schema is None:
+        return JSONResponse({"error": f"unknown tool: {name}"}, status_code=404)
+    return JSONResponse({"tool": schema})
+
+
+async def _tool_run(request):
+    name = request.path_params.get("name", "")
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    args = body.get("arguments", body) if isinstance(body, dict) else {}
+    if not isinstance(args, dict):
+        return JSONResponse({"error": "arguments must be an object"}, status_code=400)
+    try:
+        if name == "halo_device":
+            out = await halo(
+                operation=args.get("operation"),
+                text=args.get("text"),
+                image_b64=args.get("image_b64"),
+                lua_name=args.get("lua_name"),
+                duration_s=float(args.get("duration_s", 3.0)),
+                limit=int(args.get("limit", 20)),
+                offset=int(args.get("offset", 0)),
+            )
+            return JSONResponse({"result": out})
+        if name == "halo_help":
+            from .server import halo_help as _help
+
+            return JSONResponse({"result": await _help(args.get("topic"))})
+        if name == "halo_shutdown":
+            from .server import halo_shutdown as _shutdown
+
+            return JSONResponse({"result": await _shutdown(bool(args.get("confirm", False)))})
+        if name == "halo_dashboard":
+            from .server import halo_dashboard as _dash
+
+            out = await _dash()
+            app = out.get("app")
+            if app is not None:
+                out = dict(out)
+                out["app"] = {"title": getattr(app, "title", ""), "state": getattr(app, "state", {})}
+            return JSONResponse({"result": out})
+    except (ValueError, TypeError):
+        return JSONResponse({"error": "argument types invalid (numbers/booleans)"}, status_code=400)
+    return JSONResponse({"error": f"unknown tool: {name}"}, status_code=404)
+
+
 async def _llm_chat(request):
     try:
         body = await request.json()
@@ -247,6 +444,9 @@ routes = [
     Route("/api/health", _health),
     Route("/api/dashboard", _dashboard),
     Route("/api/tools", _tools),
+    Route("/api/tools/{name}", _tool_get),
+    Route("/api/tools/{name}", _tool_run, methods=["POST"]),
+    Route("/api/llm/detect", _llm_detect),
     Route("/api/skills", _skills),
     Route("/api/skills/{name}", _skill_read),
     Route("/api/devices", _devices),
