@@ -1,7 +1,7 @@
 name: ci
 on: {push: {branches: [main]}, pull_request: {}}
 jobs:
-  ci:
+  backend:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -9,4 +9,16 @@ jobs:
       - run: uv sync --extra dev
       - run: uv run ruff check .
       - run: uv run ruff format --check .
+      - run: uv run pyright src/
       - run: uv run pytest -q
+  frontend:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: web_sota
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run biome:ci

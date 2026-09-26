@@ -83,8 +83,9 @@ async def halo_dashboard() -> dict:
 
         app = PrefabApp(
             title="Halo Dashboard",
-            content=content,
-            data={
+            mode="dark",
+            state={
+                "summary": content,
                 "connected": state["connected"],
                 "device": state["device"],
                 "display": state["display"],

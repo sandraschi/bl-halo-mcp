@@ -1,2 +1,51 @@
-# bl-halo-mcp (full index)
-Fleet wrapper for Brilliant Labs Halo/Frame. See llms.txt + README + docs/*. FastMCP halo_device 19 ops, Starlette /api/* 11976, Vite 11977, MOCK-first.
+# bl-halo-mcp - full index
+
+Fleet MCP wrapper for Brilliant Labs Halo (Frame-compatible) AI glasses.
+MOCK-first: every operation works without hardware or BLE.
+
+## MCP tools (stdio via `uv run python -m bl_halo_mcp.run_server`, HTTP via `--serve` + `/mcp`)
+
+- `halo_device` (portmanteau, 19 ops, readonly except connect/disconnect/show/run/deploy/noa/miniapp):
+  status, list_devices, connect, disconnect, show_text (<=500 chars), show_image
+  (base64 <=2MB), clear_display, capture_photo, list_photos (limit/offset/has_more),
+  imu_read, tap_history, play_audio, record_audio (1-30s), run_lua (<=20k chars),
+  list_lua_apps, deploy_lua (*.lua), noa_ask, miniapp_create, firmware_info.
+  Returns `{success, message, result?, error?, error_type?, suggestions?, has_more?}`.
+- `halo_dashboard` (Prefab app=True): device, battery, display, counts.
+- `halo_help(topic?)`: pairing, lua, display, noa, ble.
+- `halo_shutdown(confirm=True)`: guarded disconnect.
+- Resource `skill://halo-dev/SKILL.md`; prompt `halo_recipe(goal)`.
+
+## REST (Starlette, 11976, explicit CORS localhost+tauri only)
+
+GET /api/health | /api/dashboard | /api/tools | /api/skills | /api/skills/{name} |
+/api/devices | /api/photos?limit&offset | /api/logs | /api/llm/providers |
+/api/llm/discover | /api/llm/models | /api/llm/gpus (nvidia-smi) |
+POST /api/halo {operation, text?, image_b64?, lua_name?, duration_s?, limit?, offset?} |
+POST /api/shutdown {confirm:true} | POST /api/llm/chat {message, skill?} (backend proxy only)
+
+## Env (see .env.example)
+
+BL_HALO_MOCK (default true), BL_HALO_DEVICE_MAC, BL_HALO_DEVICE_NAME,
+BL_HALO_BACKEND_PORT=11976, BL_HALO_FRONTEND_PORT=11977, BL_HALO_DATA_DIR=data.
+
+## Webapp (web_sota, Vite React + Zustand, 11977)
+
+Routes: Dashboard (hero+KPIs+onboarding-cue+MOCK badges), Device (connect/photo/text),
+Gallery (/api/photos), Lua (run/deploy/list), Inbox (/api/logs), Tools (live run),
+Skills (SKILL.md reader), Chat (capped 100 history, skill-first pill, backend proxy),
+Settings (Ollama/LMStudio probe + model persist + GPU select), Help, Logs.
+
+## Hardware facts (Halo vs Frame)
+
+Halo: ~40g wayfarer, 0.2in 640x480 RGB microOLED peripheral HUD, inference camera,
+dual mics + audio-activity, 2x bone-conduction speakers, IMU, tap+click, NPU SoC,
+~14h battery, $299-399. Frame: 640x400 OLED 20deg FOV, 720p camera, ~40g, $349.
+Dev: host app + on-device Lua 5.4 frame.* over BLE (Halo Lua / Battery / OTA /
+LE Audio services); brilliant-sdk (ble+msg) on PyPI; halo-emulator for HW-free dev;
+Noa app (noa-flutter) + Narrative memory + Miniapps.
+
+## Limits (declared doubles)
+
+MOCK photos are 1x1 PNG fixtures; Noa answers carry [MOCK Noa] until paired;
+IMU returns rest pose; no wrappee webhook API exists so no inbound webhooks.
