@@ -147,6 +147,18 @@ export function Help(): React.ReactElement {
 						forgetting - is the entire substance of the debate; a tiny LED was
 						never going to settle it.
 					</p>
+					<p className="mt-2 text-sm text-zinc-300">
+						<strong className="text-zinc-100">And nothing here is new.</strong>{" "}
+						Eyes memorize faces for free. A long lens from 20 meters is
+						detective bread-and-butter, socially fine because unnoticed. A phone
+						in a breast pocket, lens out, matches smart glasses at higher
+						resolution - also unnoticed. Enforcement in real life is proxemic,
+						not legalistic: stare from a meter for thirty seconds and the
+						outcome is a broken nose, not a GDPR complaint. The only genuine
+						novelty in glasses is friction - hands-free, always-on capture
+						already wired to recognition and memory. A difference of degree
+						wearing the costume of a difference of kind.
+					</p>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
 						<li>EU/GDPR: strictest regime; facial data needs a legal basis.</li>
 						<li>
