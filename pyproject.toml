@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bl-halo-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "Fleet MCP wrapper for Brilliant Labs Halo (and Frame) AI glasses - BLE, Lua VM, display, camera, IMU, audio, Noa Miniapps"
 readme = "README.md"
 requires-python = ">=3.11"
