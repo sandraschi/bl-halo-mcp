@@ -11,7 +11,8 @@ Bridge between fleet agents and Brilliant Labs **Halo** AI glasses (2025, succes
 | Do I need an account? | No for MOCK/emulator. Yes (App Store / Play Noa app) for live Noa answers + Miniapp store. |
 | Free tier? | Yes - Halo ships with Noa free incl. daily usage caps; emulator + SDKs free/open-source (BSD-3). |
 | Credit card required? | No for device + emulator. Only if you exceed Noa caps / paid phone store extras. |
-| Ongoing cost? | Halo $299-399 one-time + prescription via SmartBuyGlasses (optional). No fleet charge. |
+| Ongoing cost? | Halo $299-399 one-time + prescription via SmartBuyGlasses (optional). Noa cloud free within daily caps. No fleet charge. |
+| Noa key? | No signup portal exists. Paths: (a) Noa mobile app account (free), (b) preview key from the public `noa-playground` repo's API key box -> `NOA_API_KEY` in `.env`. Without either, `noa_ask` answers MOCK by design. |
 | Who bills? | Brilliant Labs (hardware) / Apple-Google stores (Noa app). Not sandraschi. |
 
 ## Prerequisites outside this repo

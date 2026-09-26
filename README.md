@@ -8,6 +8,15 @@ Headless default: FastMCP stdio (`uv run python -m bl_halo_mcp.server`) + Starle
 
 Hands-in: display write, photo capture, Lua deploy, Noa ask. Hands-out: BLE pairing, firmware flash, store publish (drafts only here).
 
+## Hardware (open, documented)
+
+Halo is fully documented open hardware: Balletto B1 (Cortex-M55 + Ethos-U55 NPU),
+VGA global-shutter camera, dual mics, bone-conduction audio, tap-interrupt IMU,
+300 mAh - see [docs/HARDWARE.md](docs/HARDWARE.md) and the dashboard **Hardware**
+page with a 3D viewer for Brilliant's official full-assembly STL
+(`docs.brilliant.xyz/halo/halo.stl`). No official CAD sources or firmware repo
+exist yet (both "coming soon" upstream) - anything claiming otherwise is wrong.
+
 ## Quick start
 
 ```powershell
