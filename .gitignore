@@ -57,6 +57,9 @@ Thumbs.db
 *.log
 logs/
 
+# Assess reports (regenerable snapshots, not source)
+reports/
+
 # Fleet backup artifacts
 *.bak
 *.bak.*

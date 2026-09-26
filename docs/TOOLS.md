@@ -9,5 +9,6 @@ All implemented, no stubs. MOCK-safe.
 | `halo_help` | topic: pairing, lua, display, noa, ble |
 | `halo_shutdown` | Guarded disconnect (confirm=True) |
 
-REST: `GET /api/health|dashboard|tools|skills|devices|logs|llm/providers|llm/models|llm/gpus`, `POST /api/llm/chat`.
+REST: `GET /api/health|dashboard|tools|skills|devices|photos|logs|llm/providers|llm/discover|llm/models|llm/gpus`, `POST /api/halo` (full operation passthrough), `POST /api/shutdown` (guarded disconnect), `POST /api/llm/chat` (backend proxy only).
+Transports: stdio (`python -m bl_halo_mcp.run_server`), HTTP (`--serve`, mounts MCP at `/mcp` with lifespan wiring).
 Resources: `skill://halo-dev/SKILL.md`. Prompts: `halo_recipe(goal)`.
