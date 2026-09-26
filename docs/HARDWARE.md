@@ -33,6 +33,21 @@
 - Audio streaming path bypasses Lua - `play_audio` latency is a host concern.
 - Tap interrupts come from the BMA580 - `tap_history` kinds map to its engine.
 
+## Provenance & availability (Sep 2026)
+
+- Status: alive, small-batch. First units Aug 2026, limited quantities, direct
+  sale via brilliant.xyz ($299 pre-launch, now $349-399). Frame discontinued.
+- Company: founded Hong Kong 2019 (ex-Apple Bobak Tavangar), HQ Singapore.
+  2026 partnerships: Alif (Balletto), Neuphonic + TheStage AI (on-device
+  inference), Liquid AI (Noa vision-language).
+- Manufacturing: China-centered supply chain (assembly factory not named;
+  schedules move with Chinese holidays; their own blog describes painful 2025
+  team+supply-chain restructuring after Frame lessons). Far-East BOM: Guozhao
+  OLEDoS, QST compass, Grepow cells; plus PixArt (TW) camera, Bosch (DE) accel,
+  TDK (JP) mics, TI (US) charger/amp, Alif Balletto MCU.
+- What it means here: MOCK-first + emulator is the primary dev path; hardware
+  is a bonus. Check the storefront for current stock, not this file.
+
 ## Safety (from Brilliant, abridged)
 
 Do not use while driving/operating machinery; eye strain/headache/motion sickness

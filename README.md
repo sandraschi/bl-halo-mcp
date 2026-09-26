@@ -25,6 +25,21 @@ page with a 3D viewer for Brilliant's official full-assembly STL
 (`docs.brilliant.xyz/halo/halo.stl`). No official CAD sources or firmware repo
 exist yet (both "coming soon" upstream) - anything claiming otherwise is wrong.
 
+## Status: alive, small-batch (not dead, not Meta)
+
+First Halo units shipped Aug 2026 after a bumpy ramp (production dates slipped
+repeatedly through H1 2026 - hinge/plastics tweaks, holiday shutdowns). Limited
+quantities, direct sale via brilliant.xyz ($299 pre-launch, now $349-399).
+Frame is discontinued/sold out. Company active: 2026 partnerships (Alif, Neuphonic,
+TheStage AI, Liquid AI), maintained docs/SDK/firmware.
+
+Supply chain is China-centered (Brilliant has not named the assembly factory;
+schedules move with Chinese holidays; Far-East suppliers include Guozhao
+display, QST compass, Grepow cells). Design in Singapore/HK, fabless global BOM,
+assembly in China - the standard small-batch open-hardware play. Consequence for
+this repo: MOCK-first + emulator is the primary dev path for most people; live
+hardware is a bonus, not the baseline.
+
 ## Quick start
 
 ```powershell

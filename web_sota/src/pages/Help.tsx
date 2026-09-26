@@ -58,11 +58,16 @@ export function Help(): React.ReactElement {
 						</li>
 						<li>
 							Live cloud (Noa answers): needs a preview key - see the Noa tab.
-							tab.
 						</li>
 						<li>
 							Upstream: docs.brilliant.xyz, brilliant_sdk on PyPI, noa-flutter
 							(Noa app), noa-playground (key source).
+						</li>
+						<li>
+							Alive, small-batch: first units shipped Aug 2026 after H1 slips,
+							limited quantities via brilliant.xyz ($349-399); Frame
+							discontinued. China-centered supply chain (factory unnamed) - so
+							MOCK-first here is the normal path, not a fallback.
 						</li>
 					</ul>
 				</Card>
