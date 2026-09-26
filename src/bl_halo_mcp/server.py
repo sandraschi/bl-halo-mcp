@@ -102,7 +102,8 @@ async def halo_dashboard() -> dict:
 @mcp.tool(annotations={"readonly": True}, output_schema=_RESULT_SCHEMA)
 async def halo_help(
     topic: Annotated[
-        str | None, Field(description="Focus: pairing, lua, display, noa, ble. Omit for overview.")
+        str | None,
+        Field(description="Focus: pairing, lua, display, noa, ble, hardware. Omit for the capability-matrix overview."),
     ] = None,
 ) -> dict:
     """Halo help - operations, BLE pairing, Lua, Noa.
@@ -115,16 +116,63 @@ async def halo_help(
     `await halo_help("lua")`
     """
     texts = {
-        "pairing": "Charge Halo, hold pairing 3s, Noa app connect+pair. MOCK needs nothing.",
-        "lua": "On-device Lua 5.4 frame.* API. Use run_lua / deploy_lua. Emulator: pip install halo-emulator.",
-        "display": "Halo 640x480 peripheral HUD; Frame 640x400. show_text/show_image/clear_display.",
-        "noa": "Noa companion app + Narrative memory + Miniapps. noa_ask is MOCK until paired.",
-        "ble": "Services: Halo Lua, Battery, OTA, LE Audio. Python: brilliant-ble/brilliant-msg.",
+        "overview": (
+            "WHAT WORKS WITHOUT WHAT. Tier 0 (nothing needed): MOCK mode rehearses every op - "
+            "display writes are logged, photos are fixtures, Noa answers are placeholders. "
+            "Tier 1 (Halo/Frame in BLE range, BL_HALO_MOCK=false): everything local is REAL - "
+            "show_text/show_image, capture_photo, imu_read, tap_history, play/record_audio, "
+            "run_lua/deploy_lua. No account, no cloud, no key. "
+            "Tier 2 (Noa cloud key): only noa_ask needs it - set NOA_API_KEY to a preview key "
+            "from github.com/brilliantlabsAR/noa-playground and it calls api.brilliant.xyz live. "
+            "Ops: status, list_devices, connect, disconnect, show_text, show_image, clear_display, "
+            "capture_photo, list_photos, imu_read, tap_history, play_audio, record_audio, run_lua, "
+            "list_lua_apps, deploy_lua, noa_ask, miniapp_create, firmware_info. "
+            "Topics: pairing, lua, display, noa, ble, hardware. Full guide: docs/ONBOARDING.md."
+        ),
+        "pairing": (
+            "Charge Halo, hold the under-arm button 3s for pairing, connect+pair in the Noa app "
+            "(login runs through api.brilliant.xyz). Then set BL_HALO_MOCK=false plus "
+            "BL_HALO_DEVICE_MAC and restart; halo_device(connect) bonds. Keep phone/PC within 3m. "
+            "Noa app account is free with daily caps - needed for Tier-2 answers only."
+        ),
+        "lua": (
+            "On-device Lua 5.4 frame.* API (Zephyr OS). run_lua executes <=20k chars, deploy_lua saves "
+            "plain *.lua files, list_lua_apps inventories them. Halo draws IMMEDIATELY - no show() "
+            "call needed (Frame needs it; sending it on Halo is a harmless no-op). No hardware? "
+            "pip install halo-emulator && halo-emulator ./my_app/ runs the same Lua."
+        ),
+        "display": (
+            "Halo panel is 640x480 RGB microOLED but the drawable area is 256x256 - keep HUD text "
+            "under ~140 chars for glanceability (hard cap 500). Draws take effect immediately. "
+            "Frame is 640x400 with 20deg FOV and needs show(). show_image takes base64 PNG/JPEG <=2MB."
+        ),
+        "noa": (
+            "noa_ask WITHOUT a key returns a labeled MOCK placeholder - by design, not broken. "
+            "Live path: POST https://api.brilliant.xyz/dev/noa with header 'Authorization: <key>' "
+            "(raw token, no Bearer), multipart fields prompt/messages/image/experimental/time/location. "
+            "Get a preview key from the Noa playground repo (API key box), put it in NOA_API_KEY, restart. "
+            "Unofficial integration copied from Brilliant's own public playground code - endpoint may move. "
+            "Bad/expired key returns error_type noa_cloud (never silent mock). "
+            "Alternative: Noa mobile app account. Narrative memory + Miniapps live in the app, not here; "
+            "miniapp_create only drafts *.lua from natural language."
+        ),
+        "ble": (
+            "Halo is a BLE 5.3 peripheral: services Halo Lua, Battery, OTA, LE Audio. "
+            "Python: pip install brilliant-sdk (brilliant-ble transport + brilliant-msg types). "
+            "Host app drives logic, glass runs the Lua event loop - there is no on-glass app store. "
+            "OTA works via MCUboot; custom firmware needs destructive disassembly (don't)."
+        ),
+        "hardware": (
+            "Balletto B1 (Alif): Cortex-M55 + Ethos-U55 NPU, 1.8MB MRAM, 2MB SRAM, Zephyr OS. "
+            "Camera PAG7982J1 VGA global shutter 81deg. Dual TDK T5838 mics (AAD wake). "
+            "Bone-conduction speakers via TI TPA2011D1. IMU BMA580 accel (tap interrupts) + QMC6308 compass. "
+            "2x150mAh cells (300mAh), BQ25170 charger, magnetic USB-C. ~40g. "
+            "Official full-assembly STL: docs.brilliant.xyz/halo/halo.stl - open the Hardware page "
+            "in this dashboard for the 3D viewer. Full manual: docs.brilliant.xyz/halo/hardware."
+        ),
     }
     key = (topic or "overview").lower()
-    text = texts.get(
-        key, "halo_device ops: status, connect, show_text, capture_photo, run_lua, noa_ask, ... See docs/TOOLS.md."
-    )
+    text = texts.get(key, texts["overview"])
     return {"success": True, "message": text, "result": {"topic": key, "text": text}}
 
 

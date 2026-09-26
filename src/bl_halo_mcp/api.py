@@ -218,12 +218,13 @@ async def _llm_gpus(request):
     return JSONResponse({"gpus": gpus})
 
 
-def _probe_json(url: str, timeout_s: float = 2.5) -> dict | list | None:
+def _probe_json(url: str, timeout_s: float = 2.5) -> dict:
     try:
         with urllib.request.urlopen(url, timeout=timeout_s) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+            payload = json.loads(resp.read().decode("utf-8", errors="replace"))
+            return payload if isinstance(payload, dict) else {}
     except Exception:
-        return None
+        return {}
 
 
 async def _llm_detect(request):
@@ -345,7 +346,7 @@ _TOOL_SCHEMAS: dict[str, dict] = {
                 "topic": {
                     "type": "string",
                     "enum": ["pairing", "lua", "display", "noa", "ble"],
-                    "description": "Help focus. Omit for overview.",
+                    "description": "Help focus: pairing, lua, display, noa, ble, hardware. Omit for overview.",
                 }
             },
         },
@@ -382,8 +383,13 @@ async def _tool_run(request):
         return JSONResponse({"error": "arguments must be an object"}, status_code=400)
     try:
         if name == "halo_device":
+            from typing import cast
+
+            from .tools.halo import HaloOp
+
+            op = str(args.get("operation") or "")
             out = await halo(
-                operation=args.get("operation"),
+                operation=cast(HaloOp, op),
                 text=args.get("text"),
                 image_b64=args.get("image_b64"),
                 lua_name=args.get("lua_name"),

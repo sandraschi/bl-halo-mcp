@@ -290,13 +290,36 @@ async def halo(
             state["noa"]["queries"] = int(state["noa"].get("queries", 0)) + 1
             log_event(state, "noa.ask", text.strip()[:120])
             save(state)
-            # Live path calls Noa companion API; MOCK returns a grounded stub answer.
+            if config.NOA_API_KEY:
+                # Live path: same call Brilliant's own public playground makes
+                # (POST api.brilliant.xyz/dev/noa, Authorization: <preview-key>).
+                try:
+                    from ..noa_cloud import ask_noa
+
+                    live = ask_noa(text.strip(), config.NOA_API_KEY, api_url=config.NOA_API_URL)
+                    return _ok(
+                        "Noa answered (live cloud).",
+                        result={"answer": live["answer"], "image_b64": live["image_b64"], "mock": False},
+                    )
+                except Exception as exc:
+                    return _error_response(
+                        f"Noa cloud call failed: {exc}",
+                        "noa_cloud",
+                        suggestions=[
+                            "Check NOA_API_KEY (preview key from the Noa playground) is current",
+                            "Retry - the /dev endpoint occasionally 5xxs",
+                            "Omit the key (blank NOA_API_KEY) for MOCK answers",
+                        ],
+                    )
             answer = (
                 f"[MOCK Noa] You asked: {text.strip()[:200]}. "
-                "Pair the Noa mobile app + Halo over BLE for live answers. "
+                "This is a placeholder - no cloud call was made because NOA_API_KEY is blank. "
+                "For live answers: open https://github.com/brilliantlabsAR/noa-playground, "
+                "paste a preview key into NOA_API_KEY in .env, restart. "
+                "Everything else (display, camera, IMU, audio, Lua) works without any key. "
                 "See docs/ONBOARDING.md."
             )
-            return _ok("Noa answered (mock).", result={"answer": answer, "mock": True})
+            return _ok("Noa answered (mock - set NOA_API_KEY for live).", result={"answer": answer, "mock": True})
 
         if op == "miniapp_create":
             if not text or not text.strip():
