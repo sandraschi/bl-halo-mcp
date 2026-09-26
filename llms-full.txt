@@ -1,0 +1,2 @@
+# bl-halo-mcp (full index)
+Fleet wrapper for Brilliant Labs Halo/Frame. See llms.txt + README + docs/*. FastMCP halo_device 19 ops, Starlette /api/* 11976, Vite 11977, MOCK-first.

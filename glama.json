@@ -1,0 +1,1 @@
+{"description": "Fleet MCP wrapper for Brilliant Labs Halo (and Frame) AI glasses - display, camera, IMU, audio, Lua apps, Noa Miniapps. MOCK-safe without hardware.", "name": "bl-halo-mcp", "repository": {"stars": 0, "type": "git", "url": "https://github.com/sandraschi/bl-halo-mcp"}, "version": "0.1.0"}

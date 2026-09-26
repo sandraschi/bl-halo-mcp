@@ -1,0 +1,1 @@
+{"$schema": "https://biomejs.dev/schemas/1.9.0/schema.json", "formatter": {"enabled": true}, "javascript": {"formatter": {"quoteStyle": "double"}}, "linter": {"enabled": true, "rules": {"recommended": false, "suspicious": {"noExplicitAny": "off"}}}}

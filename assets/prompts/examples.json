@@ -1,0 +1,920 @@
+[
+  {
+    "id": 1,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 2,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 3,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 4,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 5,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 4 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 6,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 7,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 8,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 9,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 10,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 11,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 12,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 13,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 14,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 13 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 15,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 16,
+    "tool": "halo_device",
+    "args": {
+      "operation": "deploy_lua",
+      "text": "-- example",
+      "lua_name": "app_15.lua"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 17,
+    "tool": "halo_device",
+    "args": {
+      "operation": "noa_ask",
+      "text": "example 16 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 18,
+    "tool": "halo_device",
+    "args": {
+      "operation": "miniapp_create",
+      "text": "example 17 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 19,
+    "tool": "halo_device",
+    "args": {
+      "operation": "firmware_info"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 20,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 21,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 22,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 23,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 24,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 23 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 25,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 26,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 27,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 28,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 29,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 30,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 31,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 32,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 33,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 32 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 34,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 35,
+    "tool": "halo_device",
+    "args": {
+      "operation": "deploy_lua",
+      "text": "-- example",
+      "lua_name": "app_34.lua"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 36,
+    "tool": "halo_device",
+    "args": {
+      "operation": "noa_ask",
+      "text": "example 35 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 37,
+    "tool": "halo_device",
+    "args": {
+      "operation": "miniapp_create",
+      "text": "example 36 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 38,
+    "tool": "halo_device",
+    "args": {
+      "operation": "firmware_info"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 39,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 40,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 41,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 42,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 43,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 42 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 44,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 45,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 46,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 47,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 48,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 49,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 50,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 51,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 52,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 51 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 53,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 54,
+    "tool": "halo_device",
+    "args": {
+      "operation": "deploy_lua",
+      "text": "-- example",
+      "lua_name": "app_53.lua"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 55,
+    "tool": "halo_device",
+    "args": {
+      "operation": "noa_ask",
+      "text": "example 54 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 56,
+    "tool": "halo_device",
+    "args": {
+      "operation": "miniapp_create",
+      "text": "example 55 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 57,
+    "tool": "halo_device",
+    "args": {
+      "operation": "firmware_info"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 58,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 59,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 60,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 61,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 62,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 61 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 63,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 64,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 65,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 66,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 67,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 68,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 69,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 70,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 71,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 70 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 72,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 73,
+    "tool": "halo_device",
+    "args": {
+      "operation": "deploy_lua",
+      "text": "-- example",
+      "lua_name": "app_72.lua"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 74,
+    "tool": "halo_device",
+    "args": {
+      "operation": "noa_ask",
+      "text": "example 73 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 75,
+    "tool": "halo_device",
+    "args": {
+      "operation": "miniapp_create",
+      "text": "example 74 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 76,
+    "tool": "halo_device",
+    "args": {
+      "operation": "firmware_info"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 77,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 78,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 79,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 80,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 81,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 80 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 82,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 83,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 84,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 85,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 86,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 87,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 88,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 89,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 90,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 89 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 91,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 92,
+    "tool": "halo_device",
+    "args": {
+      "operation": "deploy_lua",
+      "text": "-- example",
+      "lua_name": "app_91.lua"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 93,
+    "tool": "halo_device",
+    "args": {
+      "operation": "noa_ask",
+      "text": "example 92 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 94,
+    "tool": "halo_device",
+    "args": {
+      "operation": "miniapp_create",
+      "text": "example 93 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 95,
+    "tool": "halo_device",
+    "args": {
+      "operation": "firmware_info"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 96,
+    "tool": "halo_device",
+    "args": {
+      "operation": "status"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 97,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_devices"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 98,
+    "tool": "halo_device",
+    "args": {
+      "operation": "connect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 99,
+    "tool": "halo_device",
+    "args": {
+      "operation": "disconnect"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 100,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_text",
+      "text": "example 99 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 101,
+    "tool": "halo_device",
+    "args": {
+      "operation": "show_image",
+      "image_b64": "iVBORw0KGgo="
+    },
+    "expect": "success"
+  },
+  {
+    "id": 102,
+    "tool": "halo_device",
+    "args": {
+      "operation": "clear_display"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 103,
+    "tool": "halo_device",
+    "args": {
+      "operation": "capture_photo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 104,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_photos"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 105,
+    "tool": "halo_device",
+    "args": {
+      "operation": "imu_read"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 106,
+    "tool": "halo_device",
+    "args": {
+      "operation": "tap_history"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 107,
+    "tool": "halo_device",
+    "args": {
+      "operation": "play_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 108,
+    "tool": "halo_device",
+    "args": {
+      "operation": "record_audio"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 109,
+    "tool": "halo_device",
+    "args": {
+      "operation": "run_lua",
+      "text": "example 108 hello halo"
+    },
+    "expect": "success"
+  },
+  {
+    "id": 110,
+    "tool": "halo_device",
+    "args": {
+      "operation": "list_lua_apps"
+    },
+    "expect": "success"
+  }
+]

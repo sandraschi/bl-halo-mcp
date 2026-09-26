@@ -1,0 +1,27 @@
+# bl-halo-mcp
+
+Fleet MCP wrapper for **Brilliant Labs Halo** AI glasses (successor to Frame, 2024) with backward-compatible **Frame** support.
+
+- Halo: ~40 g wayfarer, 0.2 in 640x480 RGB microOLED peripheral HUD, low-power optical sensor/camera, dual mics + audio-activity detection, 2x bone-conduction speakers, IMU, tap + click (single/double/long), NPU + Bluetooth MCU SoC, ~14 h battery, $299-399.
+- Frame: 640x400 color OLED 20 deg FOV, 720p low-power camera, mic + IMU, ~40 g, $349.
+- Dev model: host app (Python/Flutter/Web Bluetooth) talks BLE to on-device **Lua 5.4 VM** (`frame.*` API). Host SDKs: `brilliant-sdk` / `brilliant-ble` / `brilliant-msg` (PyPI), `halo-emulator` for hardware-free dev. Companion **Noa** app (noa-flutter) + **Narrative** memory + natural-language **Miniapps / Vibe Mode**.
+- This repo: FastMCP portmanteau tools (device, display, camera, audio, imu, lua, noa, system), Starlette REST (`/api/*`), Vite React dashboard (11976/11977), MOCK-until-onboarded without hardware.
+
+## Docs
+
+- `docs/ONBOARDING.md` - first-timer: Halo vs Frame, BLE pairing, emulator, Noa app, costs.
+- `docs/CONFIGURATION.md` - env vars and ports.
+- `docs/DEVELOPMENT.md` - dev loop, tests, webapp.
+- `docs/TOOLS.md` - MCP tool reference.
+- `docs/TROUBLESHOOTING.md` - BLE/pairing fixes.
+
+## Quick start
+
+```powershell
+Copy-Item .env.example .env
+uv sync --extra dev
+uv run pytest -q
+.\start.ps1
+```
+
+Backend health: `http://127.0.0.1:11976/api/health`. Frontend: `http://127.0.0.1:11977`.
