@@ -3,7 +3,16 @@ import { Card } from "../components/ui";
 import { cn } from "../lib/cn";
 import { useConnection } from "../store/connection";
 
-const TABS = ["wrappee", "labs", "api", "noa", "lua", "errors", "faq"] as const;
+const TABS = [
+	"wrappee",
+	"labs",
+	"privacy",
+	"api",
+	"noa",
+	"lua",
+	"errors",
+	"faq",
+] as const;
 
 export function Help(): React.ReactElement {
 	const [tab, setTab] = useState<(typeof TABS)[number]>("wrappee");
@@ -29,15 +38,17 @@ export function Help(): React.ReactElement {
 							? "Wrappee"
 							: t === "labs"
 								? "Brilliant Labs"
-								: t === "api"
-									? "API / ports"
-									: t === "noa"
-										? "Noa"
-										: t === "lua"
-											? "Lua"
-											: t === "errors"
-												? "Error fix"
-												: "FAQ"}
+								: t === "privacy"
+									? "Privacy"
+									: t === "api"
+										? "API / ports"
+										: t === "noa"
+											? "Noa"
+											: t === "lua"
+												? "Lua"
+												: t === "errors"
+													? "Error fix"
+													: "FAQ"}
 					</button>
 				))}
 			</div>
@@ -112,6 +123,45 @@ export function Help(): React.ReactElement {
 						Sources: brilliant.xyz (product + Road-to-Halo blog),
 						docs.brilliant.xyz, X @brilliantlabsAR (Aug 2026 production post).
 						Full list: docs/HARDWARE.md.
+					</p>
+				</Card>
+			)}
+			{tab === "privacy" && (
+				<Card testId="help-privacy">
+					<h2 className="font-semibold">Privacy - the honest version</h2>
+					<p className="mt-2 text-sm text-zinc-300">
+						<strong className="text-zinc-100">Documented fact:</strong> no
+						Brilliant source describes a capture/recording indicator on Halo,
+						and the camera is available to any on-device Lua on demand. Contrast
+						Meta Ray-Ban: white capture LED, camera bricked if covered since Aug
+						2026 under EU pressure. Halo currently has no hardware answer to "is
+						it recording me?" - verify on hardware before any public demo.
+					</p>
+					<p className="mt-2 text-sm text-zinc-300">
+						<strong className="text-zinc-100">The real distinction</strong> is
+						not seeing vs. not-seeing - nobody has a right to walk a public road
+						unseen. It is <em>glance</em> (ephemeral, local, forgotten) vs.{" "}
+						<em>record + remember</em> (persistent, searchable, shareable).
+						Halo's Narrative feature remembers faces and names by design, so it
+						sits squarely on the second side. That gap - forgetting vs. never
+						forgetting - is the entire substance of the debate; a tiny LED was
+						never going to settle it.
+					</p>
+					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
+						<li>EU/GDPR: strictest regime; facial data needs a legal basis.</li>
+						<li>
+							China/PIPL: facial data is sensitive personal info, consent
+							required - while street-level camera tolerance stays sky-high.
+						</li>
+						<li>
+							US: patchwork, mostly consent-by-context plus state
+							wiretap/biometric laws.
+						</li>
+					</ul>
+					<p className="mt-2 text-xs text-zinc-500">
+						This bridge takes no side: it documents checkable facts and stays
+						out of the sermon business. Social question for wearers: bystanders
+						cannot tell when Halo records - act accordingly.
 					</p>
 				</Card>
 			)}
