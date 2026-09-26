@@ -17,10 +17,37 @@ export function Dashboard(): React.ReactElement {
 				<h1 data-testid="dash-hero" className="text-2xl font-bold">
 					Halo bridge <span className="text-amber-400">bl-halo-mcp</span>
 				</h1>
-				<p data-testid="dash-sub" className="mt-1 text-sm text-zinc-400">
-					MOCK-safe Halo/Frame control over BLE + Lua. Backend{" "}
-					{conn.backendPort ?? "?"} / frontend {conn.frontendPort ?? "?"}.
-				</p>
+				<div className="mt-3 flex flex-col gap-4 md:flex-row">
+					<div className="min-w-0 flex-1">
+						<p data-testid="dash-sub" className="text-sm text-zinc-300">
+							<strong>Halo</strong> = AI smart glasses by Brilliant Labs
+							($299-399, ~40&nbsp;g, sunglasses-style): a tiny display in your
+							field of view, camera, microphones, speakers, and the Noa AI
+							assistant. Developers write Lua mini-apps that run on the glasses
+							themselves.
+						</p>
+						<p data-testid="dash-repo" className="mt-2 text-sm text-zinc-400">
+							<strong className="text-zinc-200">This repo</strong> drives those
+							glasses from your PC over Bluetooth: show text on the HUD, take
+							photos, read motion taps, play/record audio, deploy Lua apps, ask
+							Noa. No glasses nearby? Everything rehearses in MOCK mode -
+							nothing here pretends to be live.
+						</p>
+						<p className="mt-2 font-mono text-[11px] text-zinc-600">
+							Backend {conn.backendPort ?? "?"} / frontend{" "}
+							{conn.frontendPort ?? "?"}
+						</p>
+					</div>
+					<img
+						data-testid="dash-product"
+						src="https://docs.brilliant.xyz/images/halo/halo-splash.png"
+						alt="Brilliant Labs Halo AI smart glasses"
+						onError={(e) => {
+							(e.target as HTMLImageElement).style.display = "none";
+						}}
+						className="hidden w-64 shrink-0 self-start rounded-lg border border-zinc-800 md:block"
+					/>
+				</div>
 				<div className="mt-3 flex gap-2">
 					<Link
 						data-testid="dash-cta"
