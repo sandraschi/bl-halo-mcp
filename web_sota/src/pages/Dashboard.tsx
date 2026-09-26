@@ -60,7 +60,7 @@ export function Dashboard(): React.ReactElement {
 				<Kpi
 					testId="kpi-connected"
 					label="connected"
-					value={String(d?.connected ?? conn.state === "connected")}
+					value={(d?.connected ?? conn.state === "connected") ? "yes" : "no"}
 				/>
 				<Kpi
 					testId="kpi-battery"
