@@ -102,7 +102,7 @@ export function Settings(): React.ReactElement {
 						<span className="text-green-400">configured</span>
 					) : (
 						<span className="text-amber-300">
-							missing - noa_ask answers MOCK (see Help - Noa key)
+							missing - noa_ask answers MOCK (see Help - Noa)
 						</span>
 					)}
 				</div>
