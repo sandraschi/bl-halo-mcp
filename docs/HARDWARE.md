@@ -48,6 +48,28 @@
 - What it means here: MOCK-first + emulator is the primary dev path; hardware
   is a bonus. Check the storefront for current stock, not this file.
 
+## Recording indicator: none documented (read this)
+
+No Brilliant manual, review, or press piece documents a capture/recording LED
+on Halo. The camera (`frame.camera.capture`) is available to any on-device Lua
+on demand, with no OS-level indicator described anywhere public. Contrast Meta
+Ray-Ban (white capture LED; Aug-Sep 2026: Meta now bricks the camera if the LED
+is covered/tampered, under EU pressure). Practical consequences:
+
+- Do not claim Halo signals recording - it is undocumented either way.
+- Verify on hardware before any public demo: look for a front light during
+  `capture_photo` and note it here.
+- Street use: Halo's Narrative feature remembers faces/names by design, so the
+  social question ("is it recording me?") has no hardware answer today.
+
+On PRC perception specifically: no survey data found - do not invent any. What
+is sourced: the LED wars are a US/EU story (Meta, EU data-protection
+authorities); China's formal angle runs through PIPL (facial data = sensitive
+personal information, consent required) while street-level camera tolerance is
+very high (densest public surveillance + ubiquitous phone filming). Whether a
+tiny LED moves PRC user acceptance is unknown - that is an open research
+question, not a fact.
+
 ## Safety (from Brilliant, abridged)
 
 Do not use while driving/operating machinery; eye strain/headache/motion sickness

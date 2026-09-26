@@ -3,7 +3,7 @@ import { Card } from "../components/ui";
 import { cn } from "../lib/cn";
 import { useConnection } from "../store/connection";
 
-const TABS = ["wrappee", "api", "noa", "lua", "errors", "faq"] as const;
+const TABS = ["wrappee", "labs", "api", "noa", "lua", "errors", "faq"] as const;
 
 export function Help(): React.ReactElement {
 	const [tab, setTab] = useState<(typeof TABS)[number]>("wrappee");
@@ -27,15 +27,17 @@ export function Help(): React.ReactElement {
 					>
 						{t === "wrappee"
 							? "Wrappee"
-							: t === "api"
-								? "API / ports"
-								: t === "noa"
-									? "Noa"
-									: t === "lua"
-										? "Lua"
-										: t === "errors"
-											? "Error fix"
-											: "FAQ"}
+							: t === "labs"
+								? "Brilliant Labs"
+								: t === "api"
+									? "API / ports"
+									: t === "noa"
+										? "Noa"
+										: t === "lua"
+											? "Lua"
+											: t === "errors"
+												? "Error fix"
+												: "FAQ"}
 					</button>
 				))}
 			</div>
@@ -70,6 +72,47 @@ export function Help(): React.ReactElement {
 							MOCK-first here is the normal path, not a fallback.
 						</li>
 					</ul>
+				</Card>
+			)}
+			{tab === "labs" && (
+				<Card testId="help-labs">
+					<h2 className="font-semibold">
+						Brilliant Labs - who makes Halo, and how
+					</h2>
+					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-300">
+						<li>
+							Singapore company, founded Hong Kong 2019 by ex-Apple Bobak
+							Tavangar. Monocle (2023), Frame (2024, now discontinued/sold out),
+							Halo (2025-).
+						</li>
+						<li>
+							<strong className="text-zinc-100">Alive, small-batch:</strong>{" "}
+							first Halo units shipped Aug 2026 after slipping through H1
+							(hinge/plastics tweaks, holiday shutdowns). Limited quantities,
+							direct sale via brilliant.xyz ($299 pre-launch, now $349-399).
+							Active 2026 partnerships: Alif, Neuphonic, TheStage AI, Liquid AI.
+							8000+ developer community.
+						</li>
+						<li>
+							<strong className="text-zinc-100">Made in China</strong> (assembly
+							factory not named): fabless global BOM - Guozhao display, QST
+							compass, Grepow cells, PixArt camera, Bosch accel, TDK mics, TI
+							charger/amp, Alif Balletto MCU - assembled in the China corridor.
+							Their own blog describes painful 2025 team + supply-chain
+							restructuring after Frame lessons; schedules visibly move with
+							Chinese holidays.
+						</li>
+						<li>
+							Consequence for this repo: MOCK-first + emulator is the normal dev
+							path; live hardware is a bonus. Check the storefront for stock,
+							not this page.
+						</li>
+					</ul>
+					<p className="mt-2 text-xs text-zinc-500">
+						Sources: brilliant.xyz (product + Road-to-Halo blog),
+						docs.brilliant.xyz, X @brilliantlabsAR (Aug 2026 production post).
+						Full list: docs/HARDWARE.md.
+					</p>
 				</Card>
 			)}
 			{tab === "api" && (

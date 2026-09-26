@@ -6,7 +6,7 @@
 [![FastMCP](https://img.shields.io/badge/FastMCP-3.x-green.svg)](pyproject.toml)
 [![Noa cloud](https://img.shields.io/badge/Noa-live%20with%20key-blueviolet.svg)](docs/ONBOARDING.md)
 
-![Brilliant Labs Halo AI smart glasses](https://docs.brilliant.xyz/images/halo/halo-splash.png)
+![Brilliant Labs Halo AI smart glasses](https://brilliant.xyz/cdn/shop/files/Halo_1.png?v=1753738731)
 
 Fleet MCP wrapper for **Brilliant Labs Halo** smart glasses (2025 successor to **Frame** 2024). Open-source AI glasses: ~40 g wayfarer, 0.2 in 640x480 RGB microOLED peripheral HUD, low-power camera, dual mics + bone-conduction audio, IMU + taps/clicks, NPU SoC, Lua 5.4 `frame.*` VM over BLE, Noa companion AI with Narrative memory + natural-language Miniapps.
 

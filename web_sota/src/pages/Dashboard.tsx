@@ -40,7 +40,7 @@ export function Dashboard(): React.ReactElement {
 					</div>
 					<img
 						data-testid="dash-product"
-						src="https://docs.brilliant.xyz/images/halo/halo-splash.png"
+						src="https://brilliant.xyz/cdn/shop/files/Halo_1.png?v=1753738731"
 						alt="Brilliant Labs Halo AI smart glasses"
 						onError={(e) => {
 							(e.target as HTMLImageElement).style.display = "none";

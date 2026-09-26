@@ -168,7 +168,9 @@ async def halo_help(
             "Bone-conduction speakers via TI TPA2011D1. IMU BMA580 accel (tap interrupts) + QMC6308 compass. "
             "2x150mAh cells (300mAh), BQ25170 charger, magnetic USB-C. ~40g. "
             "Official full-assembly STL: docs.brilliant.xyz/halo/halo.stl - open the Hardware page "
-            "in this dashboard for the 3D viewer. Full manual: docs.brilliant.xyz/halo/hardware."
+            "in this dashboard for the 3D viewer. Full manual: docs.brilliant.xyz/halo/hardware. "
+            "Recording LED: NONE DOCUMENTED - unlike Meta Ray-Ban (white capture LED, tamper-bricked "
+            "since Aug 2026), no Brilliant source describes a capture indicator; verify on hardware."
         ),
     }
     key = (topic or "overview").lower()
