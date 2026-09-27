@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Health-log spam fix: `_HealthCheckFilter` drops `/health` probes from the
+  uvicorn access log (installed at import time — the fleet launcher bypasses
+  `main()`). Real traffic still logs. Restart backend to pick up.
+- Assfix 2026-09-27 (report: `reports/assess-2026-09-27.md`): added
+  `GET /api/capabilities` (service/version/ports/tools/skills/routes),
+  `.pre-commit-config.yaml` + `scripts/pre-commit-biome.ps1` + `just bootstrap`,
+  `.gitattributes` (LF normalization).
+
 ## 0.3.0 - 2026-09-26
 
 - Live Noa cloud path: `noa_ask` with `NOA_API_KEY` calls `api.brilliant.xyz/dev/noa`
