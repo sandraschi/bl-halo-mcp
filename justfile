@@ -16,6 +16,11 @@ fmt:
 	uv run ruff check --fix .
 	uv run ruff format .
 
+bootstrap:
+	uv sync --extra dev
+	pre-commit install
+	powershell.exe -NoProfile -Command "Set-Location '{{justfile_directory()}}/web_sota'; bun install --frozen-lockfile"
+
 mcpb-pack:
 	uv run python scripts/pack_mcpb.py
 

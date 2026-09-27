@@ -491,8 +491,33 @@ def _pick_chat_model() -> str:
     return ""
 
 
+def _version() -> str:
+    try:
+        from importlib.metadata import version
+
+        return version("bl-halo-mcp")
+    except Exception:
+        return "0.0.0"
+
+
+async def _capabilities(request):
+    return JSONResponse(
+        {
+            "service": "bl-halo-mcp",
+            "version": _version(),
+            "backend_port": config.BACKEND_PORT,
+            "frontend_port": config.FRONTEND_PORT,
+            "mock": config.MOCK,
+            "tools": sorted(_TOOL_SCHEMAS.keys()),
+            "skills": ["halo-dev"],
+            "routes": sorted({getattr(r, "path", "") for r in routes if getattr(r, "path", "")}),
+        }
+    )
+
+
 routes = [
     Route("/api/health", _health),
+    Route("/api/capabilities", _capabilities),
     Route("/api/dashboard", _dashboard),
     Route("/api/tools", _tools),
     Route("/api/tools/{name}", _tool_get),
