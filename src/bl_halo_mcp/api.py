@@ -536,10 +536,27 @@ app = Starlette(routes=routes, middleware=[Middleware(_CorsMiddleware)], lifespa
 app.mount("/mcp", mcp_app)
 
 
+class _HealthCheckFilter(logging.Filter):
+    """Drop uvicorn access lines for health probes - frontend polls /api/health every 15s."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            return "/health" not in record.getMessage()
+        except Exception:
+            return True
+
+
+# Install at import time: the fleet launcher runs
+# `python -m uvicorn bl_halo_mcp.api:app` which bypasses main() below,
+# so the filter must live on the shared logger now, not only in main().
+logging.getLogger("uvicorn.access").addFilter(_HealthCheckFilter())
+
+
 def main() -> None:
     import uvicorn
 
     logging.basicConfig(level=logging.INFO)
+    logging.getLogger("uvicorn.access").addFilter(_HealthCheckFilter())
     uvicorn.run(app, host="127.0.0.1", port=config.BACKEND_PORT)
 
 
