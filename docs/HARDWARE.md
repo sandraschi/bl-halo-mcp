@@ -33,6 +33,31 @@
 - Audio streaming path bypasses Lua - `play_audio` latency is a host concern.
 - Tap interrupts come from the BMA580 - `tap_history` kinds map to its engine.
 
+## Why open is the selling argument (Sep 2026 field)
+
+Closed field, open niche of one. Meta holds ~76% of AI-glasses share (Q2 2026)
+with Ray-Ban Meta Gen 2 / Oakley / Display; the rest is Rokid, Even G2, XREAL,
+Xiaomi, Huawei, Solos, Halliday, VITURE, Snap - every one of them closed
+hardware, closed OS, closed assistant. No commercial rival publishes hardware
+docs, STLs, SDK, emulator, on-device language VM, and open companion app the
+way Brilliant does (25 public repos).
+
+Closest open efforts, honestly graded:
+
+- **MentraOS** (Mentra, open-sourced Apr 2026): open smart-glasses OS,
+  "write once, run everywhere" - the Android-of-glasses play. Real, but it runs
+  on *other people's closed hardware*. Complementary, not a substitute.
+- **Mentra Community OpenSourceSmartGlasses** (GitHub): open display/mic glasses
+  design with translation/assistant apps. Genuine open hardware, earlier stage
+  than Halo, smaller ecosystem.
+- **OpenGlass** DIY: turn any glasses into an AI gadget for pocket money.
+  Toy/hobby tier - great demo, not a product.
+
+So: if you want hackable glasses you can actually buy, audit, print parts for,
+and program on-device, Halo is the only commercial option as of Sep 2026. That
+is this repo's entire reason to exist - every closed rival would need
+screen-scraping hacks where Halo gives you BLE + Lua + emulator.
+
 ## Provenance & availability (Sep 2026)
 
 - Status: alive, small-batch. First units Aug 2026, limited quantities, direct
