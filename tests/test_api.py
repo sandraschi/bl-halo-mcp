@@ -85,3 +85,20 @@ def test_llm_chat_and_gpus():
     g = client.get("/api/llm/gpus")
     assert g.status_code == 200
     assert isinstance(g.json()["gpus"], list)
+
+
+def test_llm_chat_skill_preprompt():
+    r = client.post("/api/llm/chat", json={"message": "hello", "skill": "halo-dev"})
+    assert r.status_code == 200
+    assert r.json()["skill"] == "halo-dev"
+    missing = client.post("/api/llm/chat", json={"message": "hello", "skill": "nope-missing"})
+    assert missing.status_code == 200
+
+
+def test_capabilities():
+    r = client.get("/api/capabilities")
+    assert r.status_code == 200
+    j = r.json()
+    assert j["service"] == "bl-halo-mcp"
+    assert "halo_device" in j["tools"]
+    assert "/api/health" in j["routes"]

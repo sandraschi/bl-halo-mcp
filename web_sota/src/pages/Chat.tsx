@@ -11,7 +11,19 @@ const PERSONALITIES: Record<string, string> = {
 		"You are a Lua 5.4 frame.* API expert. Answer with short code-first replies.",
 	"Hardware Nerd":
 		"You are a hardware engineer who loves part numbers and specs. Answer precisely.",
+	"Noa Scout":
+		"You are a Noa cloud-assistant expert: preview keys, playground contract, MOCK-vs-live. Answer practically.",
+	Custom: "",
 };
+
+const EXAMPLE_PROMPTS = [
+	"Show 'Hello Halo' on the display",
+	"How do I run Lua on Halo vs Frame?",
+	"Take a photo and list recent captures",
+	"How do I get a Noa preview key?",
+	"What IMU and tap data can I read?",
+	"Draft a Lua clock miniapp",
+];
 
 const CHAT_KEY = "halo_chat_history";
 const CHAT_CAP = 100;
@@ -40,6 +52,7 @@ export function Chat(): React.ReactElement {
 	const [skill, setSkill] = useState("halo-dev");
 	const [skills, setSkills] = useState<string[]>([]);
 	const [personality, setPersonality] = useState("Halo Guide");
+	const [customText, setCustomText] = useState("");
 	const [sendError, setSendError] = useState("");
 	useEffect(() => {
 		fetchJson("/api/skills", undefined, 1)
@@ -48,6 +61,28 @@ export function Chat(): React.ReactElement {
 			)
 			.catch(() => {});
 	}, []);
+
+	const systemPrompt =
+		personality === "Custom" ? customText.trim() : PERSONALITIES[personality];
+
+	const clearHist = (): void => {
+		setHist([]);
+		localStorage.removeItem(CHAT_KEY);
+	};
+	const exportHist = (): void => {
+		const lines = hist.flatMap((m) => [
+			`You: ${m.q}`,
+			`Noa/local${m.mocked ? " [MOCK]" : ""}: ${m.a}`,
+			"",
+		]);
+		const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = "halo-chat.txt";
+		a.click();
+		URL.revokeObjectURL(url);
+	};
 
 	const send = async (): Promise<void> => {
 		if (!msg.trim() || sending) return;
@@ -58,7 +93,7 @@ export function Chat(): React.ReactElement {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					message: `${PERSONALITIES[personality]}\n\n${msg}`,
+					message: `${systemPrompt ? `${systemPrompt}\n\n` : ""}${msg}`,
 					skill,
 					model: model === "none" ? "" : model,
 				}),
@@ -101,6 +136,15 @@ export function Chat(): React.ReactElement {
 						</option>
 					))}
 				</select>
+				{personality === "Custom" && (
+					<input
+						data-testid="chat-custom-system"
+						value={customText}
+						onChange={(e) => setCustomText(e.target.value)}
+						placeholder="Custom system prompt..."
+						className="rounded border border-zinc-800 bg-zinc-950 px-2 py-1 text-xs outline-none focus:border-amber-500"
+					/>
+				)}
 				<span data-testid="chat-skill-first" className="flex gap-1">
 					{(skills.length ? skills : [skill]).map((s) => (
 						<button
@@ -177,11 +221,40 @@ export function Chat(): React.ReactElement {
 					<Send size={15} /> Send
 				</button>
 			</div>
-			<div
-				data-testid="chat-count"
-				className="font-mono text-[11px] text-zinc-600"
-			>
-				{hist.length}/{CHAT_CAP}
+			<div data-testid="example-prompts" className="flex flex-wrap gap-1.5">
+				{EXAMPLE_PROMPTS.map((p) => (
+					<button
+						key={p}
+						onClick={() => setMsg(p)}
+						className="rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs text-zinc-300 hover:border-amber-500"
+					>
+						{p}
+					</button>
+				))}
+			</div>
+			<div className="flex items-center gap-2">
+				<button
+					data-testid="chat-export"
+					disabled={hist.length === 0}
+					onClick={exportHist}
+					className="rounded border border-zinc-700 px-2 py-1 text-xs hover:border-amber-500 disabled:opacity-40"
+				>
+					Export
+				</button>
+				<button
+					data-testid="chat-clear"
+					disabled={hist.length === 0}
+					onClick={clearHist}
+					className="rounded border border-zinc-700 px-2 py-1 text-xs hover:border-amber-500 disabled:opacity-40"
+				>
+					Clear
+				</button>
+				<div
+					data-testid="chat-count"
+					className="font-mono text-[11px] text-zinc-600"
+				>
+					{hist.length}/{CHAT_CAP}
+				</div>
 			</div>
 		</section>
 	);

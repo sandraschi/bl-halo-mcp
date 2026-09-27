@@ -9,6 +9,10 @@
   `GET /api/capabilities` (service/version/ports/tools/skills/routes),
   `.pre-commit-config.yaml` + `scripts/pre-commit-biome.ps1` + `just bootstrap`,
   `.gitattributes` (LF normalization).
+- Chat is now really skill-first: `POST /api/llm/chat` accepts `skill` and
+  prepends the skill SKILL.md as preprompt (backend, capped); Chat page adds
+  Noa Scout + Custom personalities, 6 example prompts, Export (.txt) and
+  Clear (resets UI + localStorage), all disabled-when-empty.
 
 ## 0.3.0 - 2026-09-26
 

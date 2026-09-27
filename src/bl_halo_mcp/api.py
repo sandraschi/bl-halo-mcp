@@ -436,6 +436,18 @@ async def _tool_run(request):
     return JSONResponse({"error": f"unknown tool: {name}"}, status_code=404)
 
 
+def _skill_markdown(name: str) -> str:
+    """Load skill content for the chat preprompt (safe name, capped, empty on miss)."""
+    from pathlib import Path
+
+    safe = "".join(c for c in name if c.isalnum() or c in ("-", "_")) or "halo-dev"
+    p = Path(__file__).resolve().parents[2] / "skills" / safe / "SKILL.md"
+    try:
+        return p.read_text(encoding="utf-8")[:2000]
+    except OSError:
+        return ""
+
+
 async def _llm_chat(request):
     try:
         body = await request.json()
@@ -444,6 +456,9 @@ async def _llm_chat(request):
     prompt = str(body.get("message", body.get("prompt", "")))[:2000]
     if not prompt:
         return JSONResponse({"error": "message required"}, status_code=400)
+    skill_name = str(body.get("skill", "halo-dev") or "halo-dev")[:64]
+    skill_md = _skill_markdown(skill_name)
+    grounded = f"Skill {skill_name}:\n{skill_md}\n\n{prompt}"[:3000] if skill_md else prompt
     # Backend proxy only; no direct browser-to-provider.
     model = str(body.get("model", "") or "").strip()
     if not model or model == "none":
@@ -454,18 +469,21 @@ async def _llm_chat(request):
                 "answer": "[bl-halo-mcp] No local model installed - run `ollama pull gemma3:4b` (or any model), then chat again.",
                 "mock": True,
                 "model": "",
+                "skill": skill_name,
             }
         )
     try:
         req = urllib.request.Request(
             "http://127.0.0.1:11434/api/generate",
-            data=json.dumps({"model": model, "prompt": prompt[:1000], "stream": False}).encode(),
+            data=json.dumps({"model": model, "prompt": grounded, "stream": False}).encode(),
             headers={"Content-Type": "application/json"},
         )
         with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
             if data.get("response"):
-                return JSONResponse({"answer": str(data["response"])[:4000], "mock": False, "model": model})
+                return JSONResponse(
+                    {"answer": str(data["response"])[:4000], "mock": False, "model": model, "skill": skill_name}
+                )
     except Exception:
         logger.debug("Ollama passthrough unavailable", exc_info=True)
     return JSONResponse(
@@ -473,6 +491,7 @@ async def _llm_chat(request):
             "answer": f"[bl-halo-mcp] Model {model} did not answer (not pulled or Ollama busy). Echo: {prompt[:300]}",
             "mock": True,
             "model": model,
+            "skill": skill_name,
         }
     )
 
