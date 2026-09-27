@@ -292,7 +292,10 @@ export function Help(): React.ReactElement {
 						scripting language (Brazil, MIT license, ~30 years old) built to
 						live <em>inside</em> other programs - games (Roblox, World of
 						Warcraft), Neovim, and here: the Lua 5.4 VM on Halo's Zephyr OS.
-						Your Lua runs{" "}
+						Uncommon in 2026, and deliberately so: the whole VM fits in a few
+						hundred KB next to the Zephyr kernel on a 2 MB-SRAM microcontroller,
+						where Python would never fit and JavaScript would eat the battery.
+						Small is the point. Your Lua runs{" "}
 						<strong className="text-zinc-100">on the glasses</strong>; Python on
 						your PC only sends code and data over Bluetooth.
 					</p>
