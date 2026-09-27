@@ -44,9 +44,13 @@ way Brilliant does (25 public repos).
 
 Closest open efforts, honestly graded:
 
-- **MentraOS** (Mentra, open-sourced Apr 2026): open smart-glasses OS,
-  "write once, run everywhere" - the Android-of-glasses play. Real, but it runs
-  on *other people's closed hardware*. Complementary, not a substitute.
+- **MentraOS** (Mentra, on GitHub since Apr 2026, permissive license): open
+  smart-glasses OS + TypeScript SDK + miniapp store - write once, run on Mentra
+  Live/Mach 1, Even G1/G2 (full G2 support May 2026), Vuzix Z100. Phone acts as
+  the app runtime (one sensor-to-cloud pipeline, concurrent apps); live captions,
+  translation, notetaker ship working. Real and VC-backed, but it runs on *other
+  people's closed hardware* - complementary to Halo, not a substitute, and no
+  Halo port exists.
 - **Mentra Community OpenSourceSmartGlasses** (GitHub): open display/mic glasses
   design with translation/assistant apps. Genuine open hardware, earlier stage
   than Halo, smaller ecosystem.
