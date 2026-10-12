@@ -14,6 +14,7 @@ miniapp_create, firmware_info.
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import logging
 import time
@@ -332,7 +333,9 @@ async def halo(
                 try:
                     from ..noa_cloud import ask_noa
 
-                    live = ask_noa(text.strip(), config.NOA_API_KEY, api_url=config.NOA_API_URL)
+                    live = await asyncio.to_thread(
+                        ask_noa, text.strip(), config.NOA_API_KEY, api_url=config.NOA_API_URL
+                    )
                     return _ok(
                         "Noa answered (live cloud).",
                         result={"answer": live["answer"], "image_b64": live["image_b64"], "mock": False},

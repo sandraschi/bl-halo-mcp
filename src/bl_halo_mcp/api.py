@@ -209,7 +209,9 @@ async def _llm_models(request):
 async def _llm_gpus(request):
     gpus: list[dict] = []
     try:
-        proc = subprocess.run(["nvidia-smi", "-L"], capture_output=True, text=True, timeout=10, check=False)
+        proc = await asyncio.to_thread(
+            subprocess.run, ["nvidia-smi", "-L"], capture_output=True, text=True, timeout=10, check=False
+        )
         for i, line in enumerate(proc.stdout.splitlines()):
             line = line.strip()
             if line.startswith("GPU "):
@@ -478,7 +480,7 @@ async def _llm_chat(request):
             data=json.dumps({"model": model, "prompt": grounded, "stream": False}).encode(),
             headers={"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with await asyncio.to_thread(urllib.request.urlopen, req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
             if data.get("response"):
                 return JSONResponse(
