@@ -11,6 +11,7 @@
         Kind          = 'uvicorn'
         UvicornTarget = 'bl_halo_mcp.api:app'
         SyncExtras    = @('dev')
+        SyncOnStart  = $true
         Env           = @{ WEB_PORT = '11976' }
     }
     Frontend = @{
